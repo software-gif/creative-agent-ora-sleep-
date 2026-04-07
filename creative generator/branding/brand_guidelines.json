@@ -1,0 +1,88 @@
+{
+  "typography": {
+    "primary_font": "",
+    "primary_weight": "Bold",
+    "secondary_font": "",
+    "secondary_weight": "Medium",
+    "heading_style": "",
+    "notes": ""
+  },
+  "colors": {
+    "primary": "",
+    "secondary": "",
+    "accent": "",
+    "success": "",
+    "text_dark": "",
+    "text_light": "",
+    "background_light": "",
+    "background_dark": "",
+    "palette_notes": ""
+  },
+  "sales_event_colors": {
+    "valentinstag": { "primary": "#E91E63", "secondary": "#FCE4EC", "accent": "#AD1457" },
+    "ostern": { "primary": "#8BC34A", "secondary": "#F1F8E9", "accent": "#FFD54F" },
+    "muttertag": { "primary": "#E91E63", "secondary": "#FFF0F5", "accent": "#FF80AB" },
+    "vatertag": { "primary": "#1565C0", "secondary": "#E3F2FD", "accent": "#42A5F5" },
+    "pride_day": { "primary": "#FF5722", "secondary": "#FFF3E0", "accent": "#7C4DFF" },
+    "halloween": { "primary": "#FF6F00", "secondary": "#1A1A1A", "accent": "#FF8F00" },
+    "singles_day": { "primary": "#E53935", "secondary": "#FFEBEE", "accent": "#FF1744" },
+    "black_month": { "primary": "#212121", "secondary": "#B71C1C", "accent": "#FFD700" },
+    "black_week": { "primary": "#212121", "secondary": "#B71C1C", "accent": "#FFD700" },
+    "black_friday": { "primary": "#000000", "secondary": "#B71C1C", "accent": "#FFD700" },
+    "cyber_week": { "primary": "#00BCD4", "secondary": "#0D1B2A", "accent": "#00E5FF" },
+    "cyber_monday": { "primary": "#00BCD4", "secondary": "#0D1B2A", "accent": "#00E5FF" },
+    "nikolaus": { "primary": "#C62828", "secondary": "#FFCDD2", "accent": "#FFD700" },
+    "weihnachten": { "primary": "#C62828", "secondary": "#1B5E20", "accent": "#FFD700" },
+    "neujahr": { "primary": "#FFD700", "secondary": "#1A1A1A", "accent": "#FFFFFF" }
+  },
+  "visual_style": {
+    "overall": "",
+    "backgrounds": [],
+    "product_presentation": "",
+    "photography_style": ""
+  },
+  "ad_layout": {
+    "format": "9:16 (1080x1920) mit 1:1 Safe Zone",
+    "safe_zone": {
+      "description": "Wichtige Infos (Produkt, Headline, Benefits) im mittleren 1:1 Bereich (1080x1080). Logo oben, Social Proof unten — außerhalb der 1:1 Zone.",
+      "content_area": { "y_start_percent": 23, "y_end_percent": 77, "notes": "1:1 Bereich = Mitte des 9:16 Formats" },
+      "logo_area": { "position": "top_center", "y_percent": 5 },
+      "social_proof_area": { "position": "bottom_center", "y_percent": 85 }
+    },
+    "elements_order": [
+      "Logo (oben, außerhalb Safe Zone)",
+      "Headline (oberer Rand der Safe Zone)",
+      "Produkt (Mitte)",
+      "Benefits mit Icons (unter dem Produkt)",
+      "CTA Button (unterer Rand der Safe Zone)",
+      "Sub-Headline / Offer (unter CTA)",
+      "Social Proof / Payment Icons (unten, außerhalb Safe Zone)"
+    ]
+  },
+  "compositor_elements": {
+    "logo": {
+      "files": ["branding/logo_dark.png", "branding/logo_white.png"],
+      "default_position": "top_center",
+      "notes": "Logo immer im oberen Bereich. Hell auf dunklem BG, dunkel auf hellem BG."
+    },
+    "social_proof": {
+      "file": "branding/social_proof.png",
+      "text_fallback": "",
+      "position": "bottom_center"
+    },
+    "payment_icons": {
+      "file": "branding/payment_icons.png",
+      "position": "bottom_center",
+      "notes": "PayPal, Visa, Mastercard, Apple Pay, Klarna etc."
+    },
+    "color_variants": {
+      "notes": "Kleine farbige Kreise die alle verfügbaren Farben des Produkts zeigen. Position: unter dem Produkt oder am unteren Rand.",
+      "position": "bottom_center"
+    },
+    "scarcity": {
+      "elements": ["roter Punkt (live indicator)", "Text: 'Nur noch heute' / 'Endet bald'"],
+      "position": "above_cta",
+      "color": "#E53935"
+    }
+  }
+}

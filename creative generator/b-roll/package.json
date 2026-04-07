@@ -1,0 +1,20 @@
+{
+  "name": "b-roll",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion render BRoll out/b-roll.mp4",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.261",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "4.0.261"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}

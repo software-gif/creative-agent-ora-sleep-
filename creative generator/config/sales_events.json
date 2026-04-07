@@ -1,0 +1,167 @@
+{
+  "events": [
+    {
+      "id": "valentinstag",
+      "name": "Valentinstag",
+      "month": 2,
+      "colors": { "primary": "#E91E63", "secondary": "#FCE4EC", "accent": "#AD1457" },
+      "background_hints": ["Rosa/Pink Töne", "Herzen", "Romantische Blumen", "Soft Lighting"],
+      "clean_background_hint": "Sanfter rosa Hintergrund, minimalistisch",
+      "themed_background_hint": "Romantische Szene mit Rosenblättern, Herzen, warmes Licht",
+      "typical_offers": []
+    },
+    {
+      "id": "ostern",
+      "name": "Ostern",
+      "month": 3,
+      "colors": { "primary": "#8BC34A", "secondary": "#F1F8E9", "accent": "#FFD54F" },
+      "background_hints": ["Frühling", "Pastell-Farben", "Blumen", "Eier", "Grüntöne"],
+      "clean_background_hint": "Heller pastellgrüner Hintergrund, frisch und clean",
+      "themed_background_hint": "Frühlingswiese, bunte Ostereier, Blumen, natürliches Licht",
+      "typical_offers": []
+    },
+    {
+      "id": "muttertag",
+      "name": "Muttertag",
+      "month": 5,
+      "colors": { "primary": "#E91E63", "secondary": "#FFF0F5", "accent": "#FF80AB" },
+      "background_hints": ["Blumen", "Elegant", "Warm", "Rosa/Pink"],
+      "clean_background_hint": "Zartrosa, eleganter Hintergrund",
+      "themed_background_hint": "Elegante Blumenarrangements, warme feminine Atmosphäre",
+      "typical_offers": []
+    },
+    {
+      "id": "vatertag",
+      "name": "Vatertag",
+      "month": 5,
+      "colors": { "primary": "#1565C0", "secondary": "#E3F2FD", "accent": "#42A5F5" },
+      "background_hints": ["Maskulin", "Blautöne", "Klar", "Premium"],
+      "clean_background_hint": "Dunkles Blau, maskulin und clean",
+      "themed_background_hint": "Premium maskuline Szene, dunkle Holz-Oberfläche, Blautöne",
+      "typical_offers": []
+    },
+    {
+      "id": "pride_day",
+      "name": "Pride Day",
+      "month": 6,
+      "colors": { "primary": "#FF5722", "secondary": "#FFF3E0", "accent": "#7C4DFF" },
+      "background_hints": ["Regenbogenfarben", "Bunt", "Fröhlich", "Diversity"],
+      "clean_background_hint": "Weißer Hintergrund mit dezenten Regenbogen-Akzenten",
+      "themed_background_hint": "Farbenfrohe Regenbogen-Elemente, Pride-Vibes",
+      "typical_offers": []
+    },
+    {
+      "id": "halloween",
+      "name": "Halloween",
+      "month": 10,
+      "colors": { "primary": "#FF6F00", "secondary": "#1A1A1A", "accent": "#FF8F00" },
+      "background_hints": ["Orange/Schwarz", "Kürbisse", "Gruselig", "Nacht"],
+      "clean_background_hint": "Schwarzer Hintergrund mit orangenen Akzenten",
+      "themed_background_hint": "Halloween-Nacht, Kürbisse, Nebel, orange Beleuchtung",
+      "typical_offers": []
+    },
+    {
+      "id": "singles_day",
+      "name": "Singles Day",
+      "month": 11,
+      "colors": { "primary": "#E53935", "secondary": "#FFEBEE", "accent": "#FF1744" },
+      "background_hints": ["Rot", "Shopping", "11.11", "Bold"],
+      "clean_background_hint": "Kräftiges Rot auf weißem Hintergrund",
+      "themed_background_hint": "Bold Rot-Schwarz Design, Shopping-Vibes, 11.11 Elemente",
+      "typical_offers": []
+    },
+    {
+      "id": "black_month",
+      "name": "Black Month",
+      "month": 11,
+      "colors": { "primary": "#212121", "secondary": "#B71C1C", "accent": "#FFD700" },
+      "background_hints": ["Schwarz", "Gold", "Rot", "Premium", "Exklusiv"],
+      "clean_background_hint": "Matt-Schwarz mit Gold-Akzenten",
+      "themed_background_hint": "Luxuriös schwarzer Hintergrund, goldene Highlights, Premium-Feel",
+      "typical_offers": []
+    },
+    {
+      "id": "black_week",
+      "name": "Black Week",
+      "month": 11,
+      "colors": { "primary": "#212121", "secondary": "#B71C1C", "accent": "#FFD700" },
+      "background_hints": ["Schwarz", "Gold", "Rot", "Premium", "Urgency"],
+      "clean_background_hint": "Matt-Schwarz mit Gold-Akzenten, stärkere Urgency",
+      "themed_background_hint": "Intensiv schwarzer Hintergrund, goldene Elemente, Countdown-Feeling",
+      "typical_offers": []
+    },
+    {
+      "id": "black_friday",
+      "name": "Black Friday",
+      "month": 11,
+      "colors": { "primary": "#000000", "secondary": "#B71C1C", "accent": "#FFD700" },
+      "background_hints": ["Tiefschwarz", "Gold", "Rot", "Maximum Urgency"],
+      "clean_background_hint": "Pures Schwarz mit Gold-Text",
+      "themed_background_hint": "Dramatisch schwarzer Hintergrund, goldene Explosions-Elemente, maximale Urgency",
+      "typical_offers": []
+    },
+    {
+      "id": "cyber_week",
+      "name": "Cyber Week",
+      "month": 11,
+      "colors": { "primary": "#00BCD4", "secondary": "#0D1B2A", "accent": "#00E5FF" },
+      "background_hints": ["Neon", "Digital", "Tech", "Cyan/Türkis"],
+      "clean_background_hint": "Dunkler Tech-Hintergrund mit Neon-Cyan-Akzenten",
+      "themed_background_hint": "Futuristisch, Neon-Glow, digitale Elemente, Cyber-Ästhetik",
+      "typical_offers": []
+    },
+    {
+      "id": "cyber_monday",
+      "name": "Cyber Monday",
+      "month": 11,
+      "colors": { "primary": "#00BCD4", "secondary": "#0D1B2A", "accent": "#00E5FF" },
+      "background_hints": ["Neon", "Digital", "Tech", "Maximum Urgency"],
+      "clean_background_hint": "Dunkler Hintergrund mit Neon-Cyan, Urgency",
+      "themed_background_hint": "Intensiv futuristische Neon-Szene, Cyber Monday Countdown",
+      "typical_offers": []
+    },
+    {
+      "id": "nikolaus",
+      "name": "Nikolaus",
+      "month": 12,
+      "colors": { "primary": "#C62828", "secondary": "#FFCDD2", "accent": "#FFD700" },
+      "background_hints": ["Rot", "Nikolaus", "Geschenke", "Stiefel", "Winter"],
+      "clean_background_hint": "Warmes Rot auf hellem Hintergrund, weihnachtlich",
+      "themed_background_hint": "Nikolaus-Szene, rote Akzente, Geschenke, winterliche Atmosphäre",
+      "typical_offers": []
+    },
+    {
+      "id": "weihnachten",
+      "name": "Weihnachten",
+      "month": 12,
+      "colors": { "primary": "#C62828", "secondary": "#1B5E20", "accent": "#FFD700" },
+      "background_hints": ["Rot/Grün/Gold", "Tannenbäume", "Schnee", "Geschenke", "Weihnachtskugeln"],
+      "clean_background_hint": "Elegantes Dunkelrot mit Gold-Akzenten",
+      "themed_background_hint": "Weihnachtliche Szene mit Tannenzweigen, Kugeln, Schnee, warmem Licht",
+      "typical_offers": []
+    },
+    {
+      "id": "neujahr",
+      "name": "Neujahr",
+      "month": 1,
+      "colors": { "primary": "#FFD700", "secondary": "#1A1A1A", "accent": "#FFFFFF" },
+      "background_hints": ["Gold/Schwarz", "Feuerwerk", "Champagner", "Neues Jahr"],
+      "clean_background_hint": "Schwarz mit Gold, elegant und festlich",
+      "themed_background_hint": "Feuerwerk-Szene, goldene Funken, Champagner-Vibes, Neujahrsnacht",
+      "typical_offers": []
+    }
+  ],
+  "default_ctas": [
+    "Jetzt sparen",
+    "Jetzt bestellen",
+    "Jetzt bestellen & sparen",
+    "Jetzt sichern",
+    "Jetzt entdecken",
+    "Zum Angebot"
+  ],
+  "default_sub_headlines": [
+    "Bis zu 50% Rabatt",
+    "Nur solange der Vorrat reicht",
+    "Limitiertes Angebot"
+  ]
+}
