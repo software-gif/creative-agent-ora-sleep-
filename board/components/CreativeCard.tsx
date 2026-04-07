@@ -15,6 +15,7 @@ export type Creative = {
   image_url: string | null;
   storage_path: string | null;
   is_saved: boolean;
+  approval_status: string; // draft | approved | live
   creative_style: string;
   creative_type: string;
   season: string;
@@ -140,6 +141,16 @@ export default function CreativeCard({
         {creative.creative_style === "off_brand" && (
           <span className="absolute top-2 left-2 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">
             OFF
+          </span>
+        )}
+        {creative.approval_status === "approved" && (
+          <span className="absolute bottom-2 left-2 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+            ✓ Approved
+          </span>
+        )}
+        {creative.approval_status === "live" && (
+          <span className="absolute bottom-2 left-2 bg-blue-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+            ● Live
           </span>
         )}
       </div>

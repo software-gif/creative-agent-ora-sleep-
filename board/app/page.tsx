@@ -10,7 +10,7 @@ import CreativeCard, {
   downloadCreative,
 } from "@/components/CreativeCard";
 import ImageOverlay from "@/components/ImageOverlay";
-import SaveButton from "@/components/SaveButton";
+import ApproveButton from "@/components/ApproveButton";
 import ClearBoardButton from "@/components/ClearBoardButton";
 
 export default function Board() {
@@ -50,7 +50,8 @@ export default function Board() {
             }
           } else if (payload.eventType === "UPDATE") {
             const c = payload.new as Creative;
-            if (c.is_saved) {
+            if (c.approval_status === "approved" || c.is_saved) {
+              // Approved → moves to Library
               setCreatives((prev) => prev.filter((x) => x.id !== c.id));
             } else {
               setCreatives((prev) =>
@@ -235,7 +236,7 @@ export default function Board() {
                 actions={
                   creative.status === "done" && (
                     <>
-                      <SaveButton creative={creative} />
+                      <ApproveButton creative={creative} />
                       {getImageUrl(creative) && (
                         <button
                           onClick={() => downloadCreative(creative)}
