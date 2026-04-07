@@ -9,20 +9,69 @@
   "currency": "CHF",
   "brand_values": [
     "Swiss Made Qualität",
-    "Nachhaltige Materialien",
-    "Mitnahme alter Matratze",
-    "Persönlicher Service"
+    "Testsieger 2026",
+    "Adaptive Positionierung",
+    "Kühlende Technologie",
+    "Mitnahme alter Matratze"
   ],
-  "products": [],
+  "products": [
+    {
+      "handle": "ora-ultra-matratze",
+      "name": "Ora Ultra Matratze",
+      "type": "Matratze",
+      "price_from": 899.00,
+      "price_to": 1699.00,
+      "url": "https://orasleep.ch/products/ora-ultra-matratze",
+      "sizes": [
+        "80x200", "90x200", "120x200", "140x200", "160x200", "180x200", "200x200"
+      ],
+      "benefits": [
+        "Der erholsamste Schlaf deines Lebens — ab Nacht eins",
+        "Adaptive Positionierung für jede Schlafposition",
+        "Kühlende Technologie gegen Nachtschweiß",
+        "Druckentlastung für Rücken und Nacken",
+        "Swiss Made — in der Schweiz entwickelt und hergestellt",
+        "Testsieger 2026",
+        "60% schlafen in unter 10 Minuten ein",
+        "Morgen-Feeling verbessert von 5.4 auf 8.6/10",
+        "49% berichten von deutlicher Schmerzlinderung"
+      ],
+      "rating": 4.1,
+      "reviews_count": 108,
+      "compare_at_price": 2091.00
+    },
+    {
+      "handle": "ora-ultra-topper",
+      "name": "Ora Ultra Topper",
+      "type": "Topper",
+      "price_from": 799.00,
+      "price_to": 899.00,
+      "url": "https://orasleep.ch/products/ora-ultra-topper",
+      "sizes": [
+        "160x200", "180x200", "200x200"
+      ],
+      "benefits": [
+        "Das Luxus-Upgrade für dein Bett",
+        "Spürbar weicher, perfekt gestützt",
+        "Druckentlastung für Schultern und Hüfte",
+        "Atmungsaktiv — für angenehmes Schlafklima",
+        "Elastischer Grip — rutscht nicht",
+        "Swiss Made Qualität"
+      ],
+      "rating": null,
+      "reviews_count": null,
+      "compare_at_price": 1858.00
+    }
+  ],
   "trust_signals": [
     "Swiss Made",
-    "4.1 Sterne Bewertung",
-    "Persönliche Beratung",
+    "Testsieger 2026",
+    "108 Kundenbewertungen",
     "Mitnahme alter Matratze"
   ],
   "social_proof": {
     "trustpilot_rating": null,
     "shop_rating": 4.1,
-    "total_reviews": null
+    "total_reviews": 108
   }
 }
