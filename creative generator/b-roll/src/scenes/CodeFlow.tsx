@@ -35,12 +35,12 @@ const message = await client.messages.create({
     speed: 0.6,
   },
   {
-    code: `model GeminiNano2 {
+    code: `model OraUltraMatratze {
   id        String   @id @default(uuid())
-  benchmark Float    @default(0)
-  tasks     Task[]
+  quality   Float    @default(0)
+  layers    Layer[]
 
-  @@map("nano_banana_2")
+  @@map("ora_ultra")
 }`,
     x: -200,
     y: 350,

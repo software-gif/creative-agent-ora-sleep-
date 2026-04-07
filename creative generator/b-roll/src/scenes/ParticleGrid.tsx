@@ -121,7 +121,7 @@ export const ParticleGrid: React.FC = () => {
             letterSpacing: -3,
           }}
         >
-          Nano Banana 2
+          Ora Sleep
         </div>
         <div
           style={{
