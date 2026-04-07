@@ -1,0 +1,170 @@
+{
+  "data_source": "Kundenfeedback-Studie (108 Antworten, März 2026)",
+  "angles": [
+    {
+      "id": "einschlafzeit",
+      "name": "Schneller einschlafen",
+      "type": "Benefit",
+      "headline_variants": [
+        "Von 30 auf 5 Minuten Einschlafzeit",
+        "60% schlafen in unter 10 Minuten ein",
+        "Endlich sofort einschlafen"
+      ],
+      "data_point": "60% der Kunden schlafen jetzt in unter 10 Minuten ein (vorher: nur 32%)",
+      "hook_variants": [
+        "Stell dir vor, du legst dich hin und schläfst einfach ein. Keine 45 Minuten Wälzen mehr.",
+        "30 Minuten Einschlafzeit? Das muss nicht sein.",
+        "Was wäre, wenn Einschlafen nur noch 5 Minuten dauert?"
+      ]
+    },
+    {
+      "id": "rueckenschmerzen",
+      "name": "Rückenschmerzen verschwunden",
+      "type": "Problem/Pain",
+      "headline_variants": [
+        "49% sagen: Beschwerden deutlich verbessert",
+        "Rückenschmerzen? Nicht mehr auf dieser Matratze",
+        "8 von 108 Kunden: Schmerzen komplett verschwunden"
+      ],
+      "data_point": "49% berichten von deutlicher Verbesserung, 8% von komplettem Verschwinden der Beschwerden",
+      "hook_variants": [
+        "Morgens aufstehen ohne Rückenschmerzen — das war für mich jahrelang undenkbar.",
+        "Deine Matratze könnte der Grund für deine Rückenschmerzen sein.",
+        "Nach 7 Tagen auf der Ora waren meine Nackenverspannungen verschwunden."
+      ]
+    },
+    {
+      "id": "schwitzen",
+      "name": "Nie wieder Schwitzen",
+      "type": "Problem/Pain",
+      "headline_variants": [
+        "44% sagen: Temperatur viel besser",
+        "Schluss mit Nachtschweiß",
+        "Die kühlste Nacht deines Lebens"
+      ],
+      "data_point": "44% berichten von 'viel besser' Temperaturkontrolle, weitere 28% von 'etwas besser'",
+      "hook_variants": [
+        "Schweißgebadet aufwachen? Das war gestern.",
+        "72% unserer Kunden schlafen jetzt kühler — ohne Klimaanlage.",
+        "Warum deine Matratze dich zum Schwitzen bringt."
+      ]
+    },
+    {
+      "id": "morgen_feeling",
+      "name": "Morgens wie neugeboren",
+      "type": "Benefit",
+      "headline_variants": [
+        "Morgen-Feeling: Von 5.4 auf 8.6 von 10",
+        "59% Verbesserung beim Aufwachen",
+        "Endlich erholt aufwachen"
+      ],
+      "data_point": "Durchschnittliches Morgen-Feeling verbessert sich von 5.4 auf 8.6 (von 10)",
+      "hook_variants": [
+        "Stell dir vor, du wachst auf und fühlst dich tatsächlich ausgeruht.",
+        "Von 5.4 auf 8.6 — so viel besser fühlen sich Ora-Kunden morgens.",
+        "Was wäre, wenn Aufstehen nicht mehr der schlimmste Teil des Tages wäre?"
+      ]
+    },
+    {
+      "id": "sofort_wirkung",
+      "name": "Sofortige Wirkung",
+      "type": "Proof",
+      "headline_variants": [
+        "50% spüren den Unterschied in 7 Tagen",
+        "Ab der 1. Nacht besser schlafen",
+        "15% spüren es sofort — ab Nacht 1"
+      ],
+      "data_point": "15% sofort ab der 1. Nacht, 35% innerhalb von 7 Tagen, 18% innerhalb von 14 Tagen",
+      "hook_variants": [
+        "Die meisten Kunden spüren den Unterschied schon in der ersten Woche.",
+        "Ab der ersten Nacht besser schlafen — kein leeres Versprechen.",
+        "50% unserer Kunden berichten: Schon nach 7 Tagen wie ausgewechselt."
+      ]
+    },
+    {
+      "id": "nps_trust",
+      "name": "Kunden empfehlen weiter",
+      "type": "Proof",
+      "headline_variants": [
+        "NPS 8.6 — 66% würden uns weiterempfehlen",
+        "9 von 10 Kunden sind begeistert",
+        "Von Kunden empfohlen — nicht von uns"
+      ],
+      "data_point": "NPS Score 8.6, 66% Promoters (9-10), nur 11% Detractors",
+      "hook_variants": [
+        "66% unserer Kunden würden die Ora Ultra aktiv weiterempfehlen.",
+        "Habe nach 1 Monat für das Ferienhaus nochmals eine gekauft.",
+        "Ich habe sie meiner Schwester empfohlen — sie hat schon bestellt."
+      ]
+    },
+    {
+      "id": "partner_schlaf",
+      "name": "Besser schlafen zu zweit",
+      "type": "Benefit",
+      "headline_variants": [
+        "Spürbar weniger Störungen durch den Partner",
+        "Endlich durchschlafen — auch zu zweit",
+        "Dein Partner wälzt sich? Du merkst nichts."
+      ],
+      "data_point": "Paare berichten von spürbar weniger Störungen durch Partnerbewegungen",
+      "hook_variants": [
+        "Dein Partner bewegt sich nachts? Auf der Ora merkst du nichts davon.",
+        "Schluss mit dem Matratzen-Tsunami wenn dein Partner sich umdreht.",
+        "Zu zweit schlafen wie allein — ohne getrennte Matratzen."
+      ]
+    },
+    {
+      "id": "swiss_quality",
+      "name": "Swiss Made Qualität",
+      "type": "Proof",
+      "headline_variants": [
+        "Swiss Made — nicht aus China",
+        "Schlafkomfort aus der Schweiz",
+        "Schweizer Handwerkskunst für deinen Schlaf"
+      ],
+      "data_point": "Hergestellt in der Schweiz, mit Schweizer Qualitätsstandards",
+      "hook_variants": [
+        "Deine Matratze kommt aus der Schweiz — nicht aus einer Fabrik in China.",
+        "Swiss Made ist nicht nur ein Label. Es ist ein Versprechen.",
+        "Warum die Schweizer besser schlafen."
+      ]
+    },
+    {
+      "id": "wiederkauf",
+      "name": "Wiederkäufer & Empfehlungen",
+      "type": "Story",
+      "headline_variants": [
+        "Kunden kaufen die 2. Ora fürs Ferienhaus",
+        "Von der Schwester empfohlen — und bestellt",
+        "Einmal Ora, immer Ora"
+      ],
+      "data_point": "Kunden kaufen zweite Matratze, empfehlen an Familie weiter",
+      "hook_variants": [
+        "Nach einem Monat habe ich eine zweite fürs Ferienhaus gekauft.",
+        "Meine Schwester hat auf meine Empfehlung bestellt — heute geliefert.",
+        "Bester Kauf den ich je gemacht habe."
+      ]
+    },
+    {
+      "id": "freude_schlafen",
+      "name": "Freude aufs Bett",
+      "type": "Story",
+      "headline_variants": [
+        "Wir freuen uns jeden Abend aufs Bett",
+        "Endlich wieder gerne ins Bett gehen",
+        "Dein Bett wird dein Lieblingsort"
+      ],
+      "data_point": "Kunden berichten von emotionaler Freude beim Schlafengehen",
+      "hook_variants": [
+        "Wir freuen uns jeden Abend ins Bett zu gehen.",
+        "Ich freue mich jeden Abend auf diese Matratze zu liegen!",
+        "Wann hast du dich das letzte Mal aufs Bett gefreut?"
+      ]
+    }
+  ],
+  "guardrails": {
+    "health_claims": "KEINE Heilversprechungen. Nur 'verbessert', 'Kunden berichten', 'laut Umfrage'. Niemals: 'heilt', 'garantiert', 'medizinisch bewiesen'.",
+    "data_usage": "Immer 'laut Kundenumfrage' oder 'X% unserer Kunden berichten' verwenden. Keine absoluten Aussagen.",
+    "language": "Deutsch, du-Form, direkt und ehrlich. Keine übertriebenen Superlative."
+  }
+}
