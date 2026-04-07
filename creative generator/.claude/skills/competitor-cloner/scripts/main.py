@@ -129,7 +129,7 @@ BRAND STYLE:
 
 LAYOUT:
 - Follow the same general layout concept as the reference ad
-- 9:16 format (1080x1920)
+- {args.format} format
 - Keep main content in the center 1:1 safe zone area
 - Leave space at top for logo (will be added in post-processing)
 - Leave space at bottom for social proof elements
@@ -165,7 +165,7 @@ QUALITY: 4K, photorealistic product rendering, clean typography, no AI artifacts
             "responseModalities": ["TEXT", "IMAGE"],
             "temperature": 0.8,
             "imageConfig": {
-                "aspectRatio": "9:16",
+                "aspectRatio": args.format if hasattr(args, 'format') else "9:16",
                 "imageSize": "4K"
             }
         }
@@ -230,6 +230,7 @@ def main():
     parser.add_argument("--headline", default=None, help="Headline text (default: auto from product)")
     parser.add_argument("--keep-headline", action="store_true", help="Adapt competitor headline instead of generating new")
     parser.add_argument("--color", default=None, help="Product color variant")
+    parser.add_argument("--format", choices=["4:5", "9:16", "1:1"], default="4:5", help="Ad format")
     parser.add_argument("--num-variants", type=int, default=2, help="Number of variants")
     parser.add_argument("--output-dir", default=None, help="Output directory")
     args = parser.parse_args()

@@ -69,8 +69,10 @@
     "108 Kundenbewertungen",
     "Mitnahme alter Matratze"
   ],
+  "trustpilot_url": "https://www.trustpilot.com/review/orasleep.ch",
   "social_proof": {
-    "trustpilot_rating": null,
+    "trustpilot_rating": 4.5,
+    "trustpilot_reviews": 237,
     "shop_rating": 4.1,
     "total_reviews": 108
   }

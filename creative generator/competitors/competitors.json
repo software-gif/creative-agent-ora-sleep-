@@ -1,0 +1,43 @@
+{
+  "competitors": [
+    {
+      "name": "Simba Sleep",
+      "market": "UK/EU",
+      "website": "https://simbasleep.com",
+      "trustpilot_url": "https://www.trustpilot.com/review/simbasleep.com",
+      "facebook_page_id": null,
+      "notes": "Stark im Paid Bereich, UK-basiert"
+    },
+    {
+      "name": "Sleep Guys",
+      "market": "DACH",
+      "website": null,
+      "trustpilot_url": null,
+      "facebook_page_id": null,
+      "notes": "Aus Kick-Off als Referenz genannt"
+    },
+    {
+      "name": "Mozart Matratzen",
+      "market": "DACH",
+      "website": "https://www.mozart-matratzen.de",
+      "trustpilot_url": null,
+      "facebook_page_id": null,
+      "notes": "Fast nur Video-Content, weniger Static Ads"
+    },
+    {
+      "name": "Avocado",
+      "market": "USA",
+      "website": "https://www.avocadogreenmattress.com",
+      "trustpilot_url": "https://www.trustpilot.com/review/avocadogreenmattress.com",
+      "facebook_page_id": null,
+      "notes": "US-Markt, Harun als Referenz genannt"
+    }
+  ],
+  "excluded": [
+    {
+      "name": "Emma",
+      "reason": "Zu konservativ, nicht stark im Paid Bereich — Sandro und Harun haben explizit ausgeschlossen"
+    }
+  ],
+  "notes": "Facebook Page IDs müssen noch recherchiert werden für Ad Library Scraping. Auch E-Com Category Kings aus anderen Branchen können als Referenz hinzugefügt werden."
+}

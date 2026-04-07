@@ -160,6 +160,86 @@
         "Ich freue mich jeden Abend auf diese Matratze zu liegen!",
         "Wann hast du dich das letzte Mal aufs Bett gefreut?"
       ]
+    },
+    {
+      "id": "matratzen_mythos",
+      "name": "Matratzen-Mythen aufgedeckt",
+      "type": "Curiosity",
+      "headline_variants": [
+        "Warum deine teure Matratze nichts bringt",
+        "Das verschweigen dir Matratzen-Händler",
+        "3 Matratzen-Mythen die dich Schlaf kosten"
+      ],
+      "data_point": "Die meisten Kunden wissen nicht, was eine gute Matratze ausmacht — Trust ist der größte Kauftreiber",
+      "hook_variants": [
+        "Du denkst, du hast eine gute Matratze? Das dachten unsere Kunden auch.",
+        "Hart = gut für den Rücken? Einer der größten Matratzen-Mythen.",
+        "Warum du trotz teurer Matratze schlecht schläfst."
+      ]
+    },
+    {
+      "id": "schlaf_science",
+      "name": "Schlaf-Wissenschaft",
+      "type": "Education",
+      "headline_variants": [
+        "Was passiert mit deinem Körper nach 7h auf der richtigen Matratze",
+        "Die 3 Schlafphasen die deine Matratze ruiniert",
+        "So beeinflusst deine Matratze deine Regeneration"
+      ],
+      "data_point": "Ora Ultra mit adaptiver Positionierung und Kühlungstechnologie basierend auf Schlafforschung",
+      "hook_variants": [
+        "Dein Körper regeneriert sich im Schlaf — aber nur wenn die Matratze stimmt.",
+        "REM-Schlaf, Tiefschlaf, Leichtschlaf: Deine Matratze beeinflusst alle drei.",
+        "Die Wissenschaft hinter dem perfekten Schlaf."
+      ]
+    },
+    {
+      "id": "temperatur_technik",
+      "name": "Kühlungstechnologie erklärt",
+      "type": "Education",
+      "headline_variants": [
+        "Warum du nachts schwitzt — und was die Ora anders macht",
+        "Die Technologie hinter kühleren Nächten",
+        "72% unserer Kunden schwitzen weniger"
+      ],
+      "data_point": "72% der Kunden berichten von verbesserter Temperaturkontrolle",
+      "hook_variants": [
+        "Schweißgebadet aufwachen ist kein Schicksal — es ist die falsche Matratze.",
+        "Wie eine Schweizer Innovation das Nacht-Schwitzen löst.",
+        "44% sagen: Temperatur viel besser. Hier ist warum."
+      ]
+    },
+    {
+      "id": "testsieger_angebot",
+      "name": "Testsieger zum Sonderpreis",
+      "type": "Offer",
+      "headline_variants": [
+        "Testsieger 2026 — Jetzt ab CHF 899",
+        "Schweizer Qualität zum besten Preis",
+        "Die beste Matratze der Schweiz — jetzt testen"
+      ],
+      "data_point": "Ora Ultra Matratze ist Testsieger 2026, ab CHF 899 (UVP CHF 2.091)",
+      "hook_variants": [
+        "Testsieger 2026 — und gerade zum besten Preis erhältlich.",
+        "CHF 899 statt CHF 2.091 — der Testsieger zum Einstiegspreis.",
+        "Wie viel ist dir guter Schlaf wert? Ab CHF 899."
+      ]
+    },
+    {
+      "id": "upgrade_angebot",
+      "name": "Bett-Upgrade Offer",
+      "type": "Offer",
+      "headline_variants": [
+        "Dein Bett verdient ein Upgrade",
+        "Alte Matratze raus, Ora rein — wir nehmen sie mit",
+        "Jetzt upgraden — alte Matratze wird mitgenommen"
+      ],
+      "data_point": "Ora bietet Mitnahme der alten Matratze an — einzigartiger Service",
+      "hook_variants": [
+        "Wir liefern die neue und nehmen die alte Matratze gleich mit.",
+        "Upgrade auf die Ora Ultra — und wir entsorgen deine alte Matratze.",
+        "Kein Schleppen, kein Entsorgen. Wir kümmern uns um alles."
+      ]
     }
   ],
   "guardrails": {

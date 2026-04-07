@@ -91,8 +91,8 @@ def build_prompt(product, event, guidelines, brand, args, variant_num):
             "sub_angle": f"{event['name']} — {product['name']}",
             "variant": variant_num,
             "scene_type": "positive",
-            "format": "9:16",
-            "resolution": {"width": 1080, "height": 1920}
+            "format": args.format,
+            "resolution": {"4:5": {"width": 1440, "height": 1800}, "9:16": {"width": 1080, "height": 1920}, "1:1": {"width": 1440, "height": 1440}}[args.format]
         },
         "canvas": {
             "background": {
@@ -288,6 +288,7 @@ def main():
     parser.add_argument("--cta", default=None, help="CTA button text")
     parser.add_argument("--benefits", nargs=3, default=None, help="3 benefits to show")
     parser.add_argument("--color", default=None, help="Product color variant")
+    parser.add_argument("--format", choices=["4:5", "9:16", "1:1"], default="4:5", help="Ad format (4:5, 9:16, 1:1)")
     parser.add_argument("--num-variants", type=int, default=3, help="Number of variants to generate")
     parser.add_argument("--output", default=None, help="Output path for prompts JSON")
     args = parser.parse_args()

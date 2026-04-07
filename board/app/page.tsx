@@ -137,7 +137,7 @@ export default function Board() {
           <div className="flex items-center gap-2 flex-wrap justify-end">
             {/* Format toggle */}
             <div className="flex items-center bg-background rounded-lg p-0.5 gap-0.5">
-              {(["all", "4:5", "9:16"] as const).map((fmt) => (
+              {(["all", "4:5", "9:16", "1:1"] as const).map((fmt) => (
                 <button
                   key={fmt}
                   onClick={() => setFormatFilter(fmt)}
@@ -145,7 +145,7 @@ export default function Board() {
                     formatFilter === fmt ? "bg-surface text-primary shadow-sm" : "text-muted hover:text-foreground"
                   }`}
                 >
-                  {fmt === "all" ? "Alle" : fmt === "4:5" ? "Feed" : "Story"}
+                  {fmt === "all" ? "Alle" : fmt === "4:5" ? "Feed" : fmt === "9:16" ? "Story" : "Square"}
                 </button>
               ))}
             </div>
@@ -180,6 +180,8 @@ export default function Board() {
             {/* Dropdowns */}
             <select value={productCatFilter} onChange={(e) => setProductCatFilter(e.target.value)} className="text-[11px] border border-border rounded-lg px-2 py-1.5 text-foreground bg-surface focus:outline-none focus:border-primary">
               <option value="all">Alle Produkte</option>
+              <option value="ora-ultra-matratze">Ora Ultra Matratze</option>
+              <option value="ora-ultra-topper">Ora Ultra Topper</option>
             </select>
             <select value={envFilter} onChange={(e) => setEnvFilter(e.target.value)} className="text-[11px] border border-border rounded-lg px-2 py-1.5 text-foreground bg-surface focus:outline-none focus:border-primary">
               <option value="all">Alle Environments</option>
