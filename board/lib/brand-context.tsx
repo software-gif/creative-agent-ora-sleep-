@@ -39,7 +39,6 @@ export function BrandProvider({ children }: { children: React.ReactNode }) {
 
     if (!error && data && data.length > 0) {
       setBrands(data);
-      // Restore from localStorage or URL param, or use first brand
       const stored = localStorage.getItem("selectedBrandId");
       const url = new URL(window.location.href);
       const urlBrand = url.searchParams.get("brand");
@@ -54,7 +53,6 @@ export function BrandProvider({ children }: { children: React.ReactNode }) {
   function setBrandId(id: string) {
     setBrandIdState(id);
     localStorage.setItem("selectedBrandId", id);
-    // Update URL param without navigation
     const url = new URL(window.location.href);
     url.searchParams.set("brand", id);
     window.history.replaceState({}, "", url.toString());

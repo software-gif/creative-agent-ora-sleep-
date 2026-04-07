@@ -1,18 +1,28 @@
 {
   "name": "Ora Sleep",
-  "shop_url": "",
+  "shop_url": "https://orasleep.ch",
   "shop_platform": "shopify",
-  "tagline": "",
-  "category": "",
+  "tagline": "Schlafkomfort aus der Schweiz",
+  "category": "Matratzen / Schlafprodukte",
   "target_market": "DACH",
   "language": "de",
-  "currency": "EUR",
-  "brand_values": [],
+  "currency": "CHF",
+  "brand_values": [
+    "Swiss Made Qualität",
+    "Nachhaltige Materialien",
+    "Mitnahme alter Matratze",
+    "Persönlicher Service"
+  ],
   "products": [],
-  "trust_signals": [],
+  "trust_signals": [
+    "Swiss Made",
+    "4.1 Sterne Bewertung",
+    "Persönliche Beratung",
+    "Mitnahme alter Matratze"
+  ],
   "social_proof": {
     "trustpilot_rating": null,
-    "shop_rating": null,
+    "shop_rating": 4.1,
     "total_reviews": null
   }
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useBrand } from "@/lib/brand-context";
-import CreativeCard, { Creative, getImageUrl } from "@/components/CreativeCard";
+import CreativeCard, { Creative, getImageUrl, downloadCreative } from "@/components/CreativeCard";
 import ImageOverlay from "@/components/ImageOverlay";
 import FolderSidebar from "@/components/FolderSidebar";
 
@@ -34,7 +34,6 @@ export default function Library() {
       .order("created_at", { ascending: false });
 
     if (!error && data) {
-      // Flatten the join result
       const mapped = data.map((row: Record<string, unknown>) => ({
         id: row.id as string,
         creative_id: row.creative_id as string,
@@ -84,7 +83,7 @@ export default function Library() {
 
   if (brandLoading) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400">
+      <div className="flex items-center justify-center h-64 text-muted">
         Laden...
       </div>
     );
@@ -92,14 +91,14 @@ export default function Library() {
 
   if (!brandId) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+      <div className="flex flex-col items-center justify-center h-64 text-muted">
         <p className="text-lg font-medium">Keine Brand konfiguriert</p>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-background">
       <FolderSidebar
         selectedFolderId={selectedFolder}
         onSelectFolder={setSelectedFolder}
@@ -108,11 +107,11 @@ export default function Library() {
 
       <main className="flex-1 p-6">
         {loading ? (
-          <div className="flex items-center justify-center h-64 text-gray-400">
+          <div className="flex items-center justify-center h-64 text-muted">
             Laden...
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+          <div className="flex flex-col items-center justify-center h-64 text-muted">
             <p className="text-lg font-medium">
               {selectedFolder ? "Keine Assets in diesem Ordner" : "Noch keine gespeicherten Assets"}
             </p>
@@ -132,17 +131,16 @@ export default function Library() {
                 actions={
                   <>
                     {getImageUrl(asset.creative) && (
-                      <a
-                        href={getImageUrl(asset.creative)!}
-                        download
-                        className="flex-1 text-center text-xs font-semibold bg-gray-900 text-white py-1.5 rounded-lg hover:bg-gray-700 transition-colors"
+                      <button
+                        onClick={() => downloadCreative(asset.creative)}
+                        className="flex-1 text-center text-xs font-semibold bg-primary text-white py-1.5 rounded-lg hover:bg-primary/80 transition-colors"
                       >
                         Download
-                      </a>
+                      </button>
                     )}
                     <button
                       onClick={() => removeFromLibrary(asset.creative_id)}
-                      className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                      className="p-1.5 rounded-lg text-muted hover:text-red-500 hover:bg-red-50 transition-colors"
                       title="Aus Library entfernen"
                     >
                       <svg

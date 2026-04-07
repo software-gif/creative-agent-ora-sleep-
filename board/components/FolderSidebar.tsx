@@ -81,8 +81,8 @@ export default function FolderSidebar({
   }
 
   return (
-    <div className="w-56 border-r border-gray-200 bg-white p-4 flex flex-col gap-1">
-      <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+    <div className="w-56 border-r border-border bg-surface p-4 flex flex-col gap-1">
+      <h2 className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">
         Ordner
       </h2>
 
@@ -91,8 +91,8 @@ export default function FolderSidebar({
         onClick={() => onSelectFolder(null)}
         className={`text-left text-sm px-3 py-2 rounded-lg transition-colors ${
           selectedFolderId === null
-            ? "bg-gray-100 text-gray-900 font-medium"
-            : "text-gray-600 hover:bg-gray-50"
+            ? "bg-primary/10 text-primary font-medium"
+            : "text-foreground hover:bg-background"
         }`}
       >
         Alle Assets
@@ -103,11 +103,11 @@ export default function FolderSidebar({
         <div
           key={folder.id}
           className={`group flex items-center rounded-lg transition-colors ${
-            dragOver === folder.id ? "bg-amber-50 ring-2 ring-amber-300" : ""
+            dragOver === folder.id ? "bg-primary-light/20 ring-2 ring-primary-light" : ""
           } ${
             selectedFolderId === folder.id
-              ? "bg-gray-100"
-              : "hover:bg-gray-50"
+              ? "bg-primary/10"
+              : "hover:bg-background"
           }`}
           onDragOver={(e) => handleDragOver(e, folder.id)}
           onDragLeave={handleDragLeave}
@@ -117,15 +117,15 @@ export default function FolderSidebar({
             onClick={() => onSelectFolder(folder.id)}
             className={`flex-1 text-left text-sm px-3 py-2 ${
               selectedFolderId === folder.id
-                ? "text-gray-900 font-medium"
-                : "text-gray-600"
+                ? "text-primary font-medium"
+                : "text-foreground"
             }`}
           >
             {folder.name}
           </button>
           <button
             onClick={() => deleteFolder(folder.id)}
-            className="hidden group-hover:block text-gray-300 hover:text-red-400 pr-2 text-xs"
+            className="hidden group-hover:block text-muted hover:text-red-400 pr-2 text-xs"
             title="Ordner löschen"
           >
             ×
@@ -142,12 +142,12 @@ export default function FolderSidebar({
             onChange={(e) => setNewName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && createFolder()}
             placeholder="Ordnername"
-            className="flex-1 text-sm border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:border-gray-400"
+            className="flex-1 text-sm border border-border rounded-lg px-2 py-1 focus:outline-none focus:border-primary"
             autoFocus
           />
           <button
             onClick={createFolder}
-            className="text-xs text-gray-500 hover:text-gray-700 px-1"
+            className="text-xs text-muted hover:text-foreground px-1"
           >
             OK
           </button>
@@ -155,7 +155,7 @@ export default function FolderSidebar({
       ) : (
         <button
           onClick={() => setCreating(true)}
-          className="mt-2 text-left text-sm text-gray-400 hover:text-gray-600 px-3 py-2"
+          className="mt-2 text-left text-sm text-muted hover:text-primary px-3 py-2"
         >
           + Neuer Ordner
         </button>

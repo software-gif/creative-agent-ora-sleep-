@@ -1,22 +1,22 @@
 {
   "typography": {
-    "primary_font": "",
+    "primary_font": "Jost",
     "primary_weight": "Bold",
-    "secondary_font": "",
-    "secondary_weight": "Medium",
-    "heading_style": "",
-    "notes": ""
+    "secondary_font": "Jost",
+    "secondary_weight": "Regular",
+    "heading_style": "Clean, bold, minimal letter-spacing",
+    "notes": "Jost Bold (700) für Headlines, Jost Regular (400) für Body. Schweizer Klarheit und Präzision."
   },
   "colors": {
-    "primary": "",
-    "secondary": "",
-    "accent": "",
-    "success": "",
-    "text_dark": "",
-    "text_light": "",
-    "background_light": "",
-    "background_dark": "",
-    "palette_notes": ""
+    "primary": "#272727",
+    "secondary": "#F2F2F2",
+    "accent": "#3C619E",
+    "success": "#708A5C",
+    "text_dark": "#272727",
+    "text_light": "#FFFFFF",
+    "background_light": "#F8F8F8",
+    "background_dark": "#272727",
+    "palette_notes": "Neutral und professionell. Dunkles Charcoal als Hauptfarbe, Slate Blue als Akzent, helles Grau für Hintergründe. Swiss Design Sensibility."
   },
   "sales_event_colors": {
     "valentinstag": { "primary": "#E91E63", "secondary": "#FCE4EC", "accent": "#AD1457" },
@@ -36,10 +36,14 @@
     "neujahr": { "primary": "#FFD700", "secondary": "#1A1A1A", "accent": "#FFFFFF" }
   },
   "visual_style": {
-    "overall": "",
-    "backgrounds": [],
-    "product_presentation": "",
-    "photography_style": ""
+    "overall": "Minimalistisch, sauber, Schweizer Design. Weiße Hintergründe mit dunkler Typografie. Professionell und vertrauenswürdig.",
+    "backgrounds": [
+      "Clean weiß oder hellgrau (#F8F8F8)",
+      "Schlafzimmer-Ambiente (warm, gemütlich)",
+      "Event-themed Hintergrund (saisonal)"
+    ],
+    "product_presentation": "Matratze als Hero-Shot, Clean Freisteller, gemütliche Schlafzimmer-Szenen",
+    "photography_style": "Hell, luftig, einladend. Warme Töne, weiche Textilien, Schlafkomfort betonen."
   },
   "ad_layout": {
     "format": "9:16 (1080x1920) mit 1:1 Safe Zone",
@@ -67,7 +71,7 @@
     },
     "social_proof": {
       "file": "branding/social_proof.png",
-      "text_fallback": "",
+      "text_fallback": "Swiss Made | Schlafkomfort aus der Schweiz",
       "position": "bottom_center"
     },
     "payment_icons": {

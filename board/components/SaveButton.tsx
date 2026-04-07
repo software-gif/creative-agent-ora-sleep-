@@ -41,8 +41,8 @@ export default function SaveButton({ creative, onSaved }: SaveButtonProps) {
       disabled={saving || creative.is_saved}
       className={`p-1.5 rounded-lg transition-colors ${
         creative.is_saved
-          ? "text-amber-500 bg-amber-50"
-          : "text-gray-400 hover:text-amber-500 hover:bg-amber-50"
+          ? "text-primary bg-primary/10"
+          : "text-muted hover:text-primary hover:bg-primary/10"
       }`}
       title={creative.is_saved ? "Gespeichert" : "Speichern"}
     >

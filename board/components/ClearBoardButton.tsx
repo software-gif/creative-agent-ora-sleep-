@@ -13,11 +13,15 @@ export default function ClearBoardButton() {
     if (!brandId || clearing) return;
     setClearing(true);
 
-    await supabase
+    const { error } = await supabase
       .from("creatives")
       .delete()
       .eq("brand_id", brandId)
       .eq("is_saved", false);
+
+    if (!error) {
+      window.location.reload();
+    }
 
     setClearing(false);
     setConfirming(false);
@@ -25,8 +29,8 @@ export default function ClearBoardButton() {
 
   if (confirming) {
     return (
-      <div className="fixed bottom-6 right-6 z-50 bg-white rounded-xl shadow-lg border border-gray-200 p-4 flex flex-col gap-3">
-        <p className="text-sm text-gray-700 font-medium">
+      <div className="fixed bottom-6 right-6 z-50 bg-surface rounded-xl shadow-lg border border-border p-4 flex flex-col gap-3">
+        <p className="text-sm text-foreground font-medium">
           Alle ungespeicherten Creatives löschen?
         </p>
         <div className="flex gap-2">
@@ -39,7 +43,7 @@ export default function ClearBoardButton() {
           </button>
           <button
             onClick={() => setConfirming(false)}
-            className="flex-1 text-sm font-semibold bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+            className="flex-1 text-sm font-semibold bg-background text-foreground py-2 rounded-lg hover:bg-border transition-colors"
           >
             Abbrechen
           </button>
@@ -51,7 +55,7 @@ export default function ClearBoardButton() {
   return (
     <button
       onClick={() => setConfirming(true)}
-      className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-white rounded-full shadow-lg border border-gray-200 flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 transition-colors"
+      className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-surface rounded-full shadow-lg border border-border flex items-center justify-center text-muted hover:text-red-500 hover:border-red-200 transition-colors"
       title="Board leeren"
     >
       <svg
