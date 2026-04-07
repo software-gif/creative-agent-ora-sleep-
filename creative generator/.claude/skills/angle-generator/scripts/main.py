@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Angle Generator — Prepares review + winner data for Claude to generate Ad Angles."""
+"""Angle Generator — Prepares review + survey + winner data for Claude to generate Ad Angles."""
 
 import argparse
 import json
@@ -20,12 +20,22 @@ def load_brand():
         return json.load(f)
 
 
-def load_reviews():
-    """Load scraped reviews."""
-    raw_path = os.path.join(PROJECT_ROOT, "reviews", "reviews_raw.json")
+def load_trustpilot_reviews():
+    """Load Trustpilot reviews."""
+    raw_path = os.path.join(PROJECT_ROOT, "reviews", "trustpilot", "reviews_raw.json")
     if not os.path.exists(raw_path):
-        print("Error: reviews/reviews_raw.json not found. Run review-scraper first.")
-        sys.exit(1)
+        print("Warning: reviews/trustpilot/reviews_raw.json not found. Skipping Trustpilot data.")
+        return []
+    with open(raw_path) as f:
+        return json.load(f)
+
+
+def load_judgeme_feedback():
+    """Load Judge.me customer feedback survey."""
+    raw_path = os.path.join(PROJECT_ROOT, "reviews", "judgeme", "feedback_raw.json")
+    if not os.path.exists(raw_path):
+        print("Warning: reviews/judgeme/feedback_raw.json not found. Skipping Judge.me data.")
+        return None
     with open(raw_path) as f:
         return json.load(f)
 
@@ -40,15 +50,15 @@ def load_winners():
         return json.load(f)
 
 
-def prepare_summary(brand, reviews, winners):
+def prepare_summary(brand, trustpilot_reviews, judgeme_data, winners):
     """Prepare a structured summary for Claude to analyze."""
-    negative = [r for r in reviews if r["rating"] <= 2]
-    positive = [r for r in reviews if r["rating"] >= 4]
-    neutral = [r for r in reviews if r["rating"] == 3]
+    # Trustpilot reviews
+    negative = [r for r in trustpilot_reviews if r.get("rating", 0) <= 2]
+    positive = [r for r in trustpilot_reviews if r.get("rating", 0) >= 4]
+    neutral = [r for r in trustpilot_reviews if r.get("rating", 0) == 3]
 
-    # Sort by rating (worst first for negative, best first for positive)
-    negative.sort(key=lambda r: r["rating"])
-    positive.sort(key=lambda r: -r["rating"])
+    negative.sort(key=lambda r: r.get("rating", 0))
+    positive.sort(key=lambda r: -r.get("rating", 0))
 
     def format_reviews(review_list, max_count=40):
         formatted = []
@@ -56,14 +66,14 @@ def prepare_summary(brand, reviews, winners):
             text = r.get("text", "").strip()
             title = r.get("title", "").strip()
             if text or title:
-                entry = f"[{r['rating']}★]"
+                entry = f"[{r.get('rating', '?')}★]"
                 if title:
                     entry += f" {title}:"
                 entry += f" {text[:400]}"
                 formatted.append(entry)
         return "\n".join(formatted)
 
-    # Winner ads summary (static ads only)
+    # Winner ads summary
     static_winners = [w for w in winners if w.get("display_format") in ("IMAGE", "DCO")]
     static_winners.sort(key=lambda w: -w.get("winner_score", 0))
     winner_lines = []
@@ -71,8 +81,18 @@ def prepare_summary(brand, reviews, winners):
         body = w.get("body_text", "")[:250]
         title = w.get("title", "")[:100]
         score = w.get("winner_score", 0)
-        fmt = w.get("display_format", "")
-        winner_lines.append(f"[Score: {score}, {fmt}] {title} — {body}")
+        winner_lines.append(f"[Score: {score}] {title} — {body}")
+
+    # Judge.me survey summary
+    judgeme_summary = {}
+    if judgeme_data:
+        judgeme_summary = judgeme_data.get("summary", {})
+        # Extract top comments from promoters
+        top_comments = []
+        for r in judgeme_data.get("responses", []):
+            if r.get("kommentar") and r.get("nps_score", 0) >= 9:
+                top_comments.append(f"[NPS {r['nps_score']}] {r['kommentar']}")
+        judgeme_summary["top_promoter_comments"] = top_comments[:15]
 
     summary = {
         "brand": {
@@ -81,15 +101,16 @@ def prepare_summary(brand, reviews, winners):
             "shop_url": brand.get("shop_url", ""),
             "target_market": brand.get("target_market", ""),
         },
-        "review_stats": {
-            "total": len(reviews),
+        "trustpilot": {
+            "total": len(trustpilot_reviews),
             "negative": len(negative),
             "neutral": len(neutral),
             "positive": len(positive),
+            "negative_reviews": format_reviews(negative),
+            "positive_reviews": format_reviews(positive),
+            "neutral_reviews": format_reviews(neutral),
         },
-        "negative_reviews": format_reviews(negative),
-        "positive_reviews": format_reviews(positive),
-        "neutral_reviews": format_reviews(neutral),
+        "judgeme_survey": judgeme_summary,
         "winner_ads": "\n".join(winner_lines),
     }
 
@@ -99,7 +120,6 @@ def prepare_summary(brand, reviews, winners):
 def main():
     parser = argparse.ArgumentParser(description="Angle Generator — Data Preparation")
     parser.add_argument("--output-dir", default="angles", help="Output directory")
-    parser.add_argument("--summary-only", action="store_true", help="Only output the summary, don't create angles.json")
     args = parser.parse_args()
 
     output_dir = os.path.join(PROJECT_ROOT, args.output_dir)
@@ -110,48 +130,58 @@ def main():
     brand = load_brand()
     print(f"  Brand: {brand.get('name', '')}")
 
-    print("Loading reviews...")
-    reviews = load_reviews()
-    print(f"  {len(reviews)} reviews loaded")
+    print("Loading Trustpilot reviews...")
+    trustpilot = load_trustpilot_reviews()
+    print(f"  {len(trustpilot)} Trustpilot reviews loaded")
+
+    print("Loading Judge.me feedback...")
+    judgeme = load_judgeme_feedback()
+    if judgeme:
+        print(f"  {judgeme.get('total_responses', 0)} Judge.me survey responses loaded")
+    else:
+        print("  No Judge.me data found")
 
     print("Loading winner ads...")
     winners = load_winners()
     print(f"  {len(winners)} winner ads loaded")
 
     # Prepare summary
-    summary = prepare_summary(brand, reviews, winners)
+    summary = prepare_summary(brand, trustpilot, judgeme, winners)
 
-    # Save summary for reference
+    # Save summary
     summary_path = os.path.join(output_dir, "review_summary.json")
     with open(summary_path, "w") as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
     print(f"\nSaved review summary: {summary_path}")
 
-    # Print summary to stdout for Claude to read
+    # Print for Claude
+    tp = summary["trustpilot"]
     print(f"\n{'='*60}")
     print(f"BRAND: {summary['brand']['name']} ({summary['brand']['category']})")
-    print(f"REVIEWS: {summary['review_stats']['total']} total "
-          f"({summary['review_stats']['negative']} negative, "
-          f"{summary['review_stats']['neutral']} neutral, "
-          f"{summary['review_stats']['positive']} positive)")
+    print(f"TRUSTPILOT: {tp['total']} reviews ({tp['negative']} neg, {tp['neutral']} neutral, {tp['positive']} pos)")
+    if judgeme:
+        js = summary["judgeme_survey"]
+        print(f"JUDGE.ME SURVEY: {judgeme.get('total_responses', 0)} responses, NPS {js.get('nps_avg', '?')}")
     print(f"WINNER ADS: {len(winners)} static ads analyzed")
     print(f"{'='*60}")
 
-    print(f"\n--- NEGATIVE REVIEWS ({summary['review_stats']['negative']}) ---")
-    print(summary["negative_reviews"][:3000])
+    print(f"\n--- TRUSTPILOT: NEGATIVE ({tp['negative']}) ---")
+    print(tp["negative_reviews"][:3000])
 
-    print(f"\n--- POSITIVE REVIEWS ({summary['review_stats']['positive']}) ---")
-    print(summary["positive_reviews"][:3000])
+    print(f"\n--- TRUSTPILOT: POSITIVE ({tp['positive']}) ---")
+    print(tp["positive_reviews"][:3000])
 
-    print(f"\n--- NEUTRAL REVIEWS ({summary['review_stats']['neutral']}) ---")
-    print(summary["neutral_reviews"][:1500])
+    if judgeme and "top_promoter_comments" in summary.get("judgeme_survey", {}):
+        print(f"\n--- JUDGE.ME: TOP PROMOTER COMMENTS ---")
+        for c in summary["judgeme_survey"]["top_promoter_comments"]:
+            print(f"  {c}")
 
     print(f"\n--- TOP WINNER ADS ---")
     print(summary["winner_ads"][:2000])
 
     print(f"\n{'='*60}")
     print("Data preparation complete.")
-    print(f"Claude should now analyze this data and generate: {output_dir}/angles.json")
+    print(f"Claude should now analyze this data and update: {output_dir}/angles.json")
     print(f"{'='*60}")
 
 

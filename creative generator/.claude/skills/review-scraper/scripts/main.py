@@ -126,7 +126,7 @@ def main():
     parser = argparse.ArgumentParser(description="Review Scraper")
     parser.add_argument("--trustpilot-url", help="Trustpilot URL (default: from brand.json)")
     parser.add_argument("--max-pages", type=int, default=0, help="Max pages (0 = all)")
-    parser.add_argument("--output-dir", default="reviews", help="Output directory")
+    parser.add_argument("--output-dir", default="reviews/trustpilot", help="Output directory")
     args = parser.parse_args()
 
     brand = load_config()
