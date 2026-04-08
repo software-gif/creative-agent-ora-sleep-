@@ -87,6 +87,16 @@ export default function Board() {
     setLoading(false);
   }
 
+  async function deleteCreative(creative: Creative) {
+    const { error } = await supabase
+      .from("creatives")
+      .delete()
+      .eq("id", creative.id);
+    if (!error) {
+      setCreatives((prev) => prev.filter((c) => c.id !== creative.id));
+    }
+  }
+
   const angles = [...new Set(creatives.map((c) => c.angle))];
   const seasons = [...new Set(creatives.map((c) => c.season).filter(Boolean))];
   const filtered = creatives
@@ -234,6 +244,7 @@ export default function Board() {
                 key={creative.id}
                 creative={creative}
                 onImageClick={setSelectedImage}
+                onDelete={deleteCreative}
                 actions={
                   creative.status === "done" && (
                     <>

@@ -16,6 +16,7 @@ export type Creative = {
   storage_path: string | null;
   is_saved: boolean;
   approval_status: string; // draft | approved | live
+  creative_number: number | null;
   creative_style: string;
   creative_type: string;
   season: string;
@@ -82,6 +83,7 @@ export async function downloadCreative(creative: Creative) {
 type CreativeCardProps = {
   creative: Creative;
   onImageClick?: (creative: Creative) => void;
+  onDelete?: (creative: Creative) => void;
   actions?: React.ReactNode;
   draggable?: boolean;
   onDragStart?: (e: React.DragEvent, creative: Creative) => void;
@@ -90,6 +92,7 @@ type CreativeCardProps = {
 export default function CreativeCard({
   creative,
   onImageClick,
+  onDelete,
   actions,
   draggable,
   onDragStart,
@@ -127,7 +130,20 @@ export default function CreativeCard({
             <span className="text-xs">Kein Bild</span>
           </div>
         )}
-        {/* Badges */}
+        {/* Top-left: ID + off-brand badge */}
+        <div className="absolute top-2 left-2 flex gap-1">
+          {creative.creative_number && (
+            <span className="bg-black/60 backdrop-blur-sm text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm font-mono">
+              #{creative.creative_number}
+            </span>
+          )}
+          {creative.creative_style === "off_brand" && (
+            <span className="bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">
+              OFF
+            </span>
+          )}
+        </div>
+        {/* Top-right: badges + delete */}
         <div className="absolute top-2 right-2 flex gap-1">
           {creative.creative_type === "lifestyle" && (
             <span className="bg-primary/90 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded shadow-sm">
@@ -137,20 +153,27 @@ export default function CreativeCard({
           <span className="bg-white/90 backdrop-blur-sm text-[10px] font-semibold px-1.5 py-0.5 rounded shadow-sm">
             {creative.format}
           </span>
+          {onDelete && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onDelete(creative); }}
+              className="opacity-0 group-hover:opacity-100 bg-red-500/90 text-white w-5 h-5 flex items-center justify-center rounded shadow-sm hover:bg-red-600 transition-all"
+              title="Löschen"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.519.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
+              </svg>
+            </button>
+          )}
         </div>
-        {creative.creative_style === "off_brand" && (
-          <span className="absolute top-2 left-2 bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">
-            OFF
-          </span>
-        )}
         {creative.approval_status === "approved" && (
-          <span className="absolute bottom-2 left-2 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+          <span className="absolute bottom-2 left-2 bg-green-500/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm">
             ✓ Approved
           </span>
         )}
         {creative.approval_status === "live" && (
-          <span className="absolute bottom-2 left-2 bg-blue-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
-            ● Live
+          <span className="absolute bottom-2 left-2 bg-blue-500/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+            <span className="w-1 h-1 bg-white rounded-full animate-pulse" />
+            Live
           </span>
         )}
       </div>
