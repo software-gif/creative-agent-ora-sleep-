@@ -44,13 +44,15 @@ Alle drei: **4:5** (Feed), **9:16** (Story), **1:1** (Square)
 - `branding/brand_guidelines.json` — Farben, Fonts, Layout
 
 ## Skills (in Reihenfolge der Nutzung)
-1. **angle-generator** — Angles aus Reviews/Daten ableiten
+1. **prompt-builder** — Dynamischer Prompt-Generator aus Angles + Brand-Daten + Andromeda-Diversification. Erstellt diverse, frische Prompt-Batches.
 2. **creative-producer** — Gemini-basierte Ad-Generierung + Compositor + Supabase Upload
-3. **sales-event-producer** — Sales-Event-Creatives (Black Friday etc.)
-4. **competitor-cloner** — Competitor-Ads als Inspiration klonen
-5. **product-scraper** — Shopify-Produktdaten scrapen
-6. **review-scraper** — Trustpilot Reviews scrapen
-7. **ad-library-scraper** — Meta Ad Library scrapen (via Apify)
+3. **angle-generator** — Angles aus Reviews/Daten ableiten
+4. **sales-event-producer** — Sales-Event-Creatives (Black Friday etc.)
+5. **competitor-cloner** — Competitor-Ads als Inspiration klonen
+6. **competitor-review-scraper** — Trustpilot Reviews aller Competitors scrapen (Pain Points, Differenzierung)
+7. **review-scraper** — Eigene Trustpilot Reviews scrapen
+8. **product-scraper** — Shopify-Produktdaten scrapen
+9. **ad-library-scraper** — Meta Ad Library scrapen (via Apify)
 
 ## Competitors (aus Kick-Off)
 - Simba Sleep (UK)
