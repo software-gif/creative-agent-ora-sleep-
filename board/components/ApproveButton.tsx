@@ -15,16 +15,11 @@ export default function ApproveButton({ creative }: ApproveButtonProps) {
     if (updating || creative.approval_status === "approved") return;
     setUpdating(true);
 
-    // Mark as approved + save to library
+    // Mark as approved (moves to Approved tab)
     await supabase
       .from("creatives")
-      .update({ approval_status: "approved", is_saved: true })
+      .update({ approval_status: "approved" })
       .eq("id", creative.id);
-
-    await supabase.from("saved_assets").insert({
-      brand_id: creative.brand_id,
-      creative_id: creative.id,
-    });
 
     setUpdating(false);
   }

@@ -10,6 +10,7 @@ import CreativeCard, {
   downloadCreative,
 } from "@/components/CreativeCard";
 import ImageOverlay from "@/components/ImageOverlay";
+import SaveButton from "@/components/SaveButton";
 import ApproveButton from "@/components/ApproveButton";
 import ClearBoardButton from "@/components/ClearBoardButton";
 
@@ -77,7 +78,7 @@ export default function Board() {
       .from("creatives")
       .select("*")
       .eq("brand_id", bid)
-      .eq("is_saved", false)
+      .eq("approval_status", "draft")
       .order("created_at", { ascending: false });
 
     if (!error && data) {
@@ -236,6 +237,7 @@ export default function Board() {
                 actions={
                   creative.status === "done" && (
                     <>
+                      <SaveButton creative={creative} />
                       <ApproveButton creative={creative} />
                       {getImageUrl(creative) && (
                         <button

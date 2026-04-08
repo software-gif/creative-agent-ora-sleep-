@@ -8,7 +8,8 @@ export default function Header() {
 
   const navItems = [
     { href: "/", label: "Board", icon: "M4 6h16M4 12h16M4 18h7" },
-    { href: "/library", label: "Library", icon: "M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" },
+    { href: "/library", label: "Library", icon: "M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" },
+    { href: "/approved", label: "Approved", icon: "M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" },
   ];
 
   return (
