@@ -273,8 +273,8 @@ def build_prompt(angle, product, brand, guidelines, fmt, creative_type, style, v
             "generation_instructions": {
                 "style_reference": f"{'Experimentelles' if style == 'off_brand' else 'Clean, Swiss'} {'Lifestyle' if is_lifestyle else 'Product'} Ad. Angle: {angle['name']}. Format: {fmt}. {'Mutige Farben und Layouts.' if style == 'off_brand' else 'Minimalistisch, professionell.'}",
                 "must_include": [
-                    f"Headline: \"{headline}\"",
-                    f"{'Lifestyle Szene' if is_lifestyle else f'Produkt: {product[\"name\"]}'}"
+                    f'Headline: "{headline}"',
+                    "Lifestyle Szene" if is_lifestyle else f"Produkt: {product['name']}",
                 ] + [f"Benefit: {b}" for b in benefits],
                 "must_avoid": [
                     "Health claims (heilt, garantiert, medizinisch bewiesen)",

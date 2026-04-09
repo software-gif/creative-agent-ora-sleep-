@@ -60,8 +60,9 @@ class SupabaseClient:
         self.rest_url = f"{self.url}/rest/v1"
         # Use service role key if available (bypasses RLS), otherwise anon key
         self.key = service_role_key or anon_key
+        # New-style secret keys (sb_secret_*) must be used as both apikey AND bearer
         self.headers = {
-            "apikey": anon_key,
+            "apikey": self.key,
             "Authorization": f"Bearer {self.key}",
             "Content-Type": "application/json",
             "Prefer": "return=representation",
@@ -669,9 +670,15 @@ def generate_single_ad(api_key, sb, brand_id, batch_id, prompt_data, index, crea
     # Composite all overlays (logo, social proof, payment icons, etc.)
     image_bytes = composite_all_overlays(image_bytes, ad_prompt)
 
-    # Build filename
-    angle_slug = meta["angle"].lower().replace("/", "_").replace(" ", "_")
-    sub_angle_slug = meta["sub_angle"].lower().replace(" ", "_").replace("/", "_")
+    # Build filename (ASCII-safe for Supabase Storage)
+    import re
+    def _slugify(s):
+        s = s.lower()
+        s = s.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue").replace("ß", "ss")
+        s = re.sub(r"[^a-z0-9]+", "_", s)
+        return s.strip("_")
+    angle_slug = _slugify(meta["angle"])
+    sub_angle_slug = _slugify(meta["sub_angle"])
     variant = meta["variant"]
     fmt = meta["format"].replace(":", "x")
     ext_map = {"image/png": "png", "image/jpeg": "jpg", "image/webp": "webp"}
