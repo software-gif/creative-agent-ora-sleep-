@@ -36,6 +36,13 @@ try:
 except ImportError:
     HAS_PIL = False
 
+# Text compositor for programmatic text rendering (replaces Gemini text)
+try:
+    from text_compositor import composite_text
+    HAS_TEXT_COMPOSITOR = True
+except ImportError:
+    HAS_TEXT_COMPOSITOR = False
+
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", "..", ".."))
@@ -212,14 +219,17 @@ def encode_image(image_path):
 
 
 def build_gemini_prompt(ad_prompt_json, product_image_path):
-    """Build the Gemini API request payload from a JSON prompt + product image."""
+    """Build the Gemini API request payload from a JSON prompt + product image.
+
+    IMPORTANT: Gemini generates ONLY the visual scene (background, product, lighting).
+    ALL text (headlines, CTAs, prices, badges) is rendered programmatically by
+    text_compositor.py AFTER Gemini returns the image.
+    """
 
     meta = ad_prompt_json["meta"]
     canvas = ad_prompt_json["canvas"]
     layout = ad_prompt_json["layout"]
     product = ad_prompt_json["product"]
-    text_overlays = ad_prompt_json["text_overlays"]
-    visual_elements = ad_prompt_json.get("visual_elements", {})
     brand_elements = ad_prompt_json.get("brand_elements", {})
     gen_instructions = ad_prompt_json["generation_instructions"]
 
@@ -236,51 +246,53 @@ def build_gemini_prompt(ad_prompt_json, product_image_path):
 
     logo_visible = brand_elements.get('logo', {}).get('visible', False)
 
-    prompt_text = f"""Generate a professional static advertisement image with the following exact specifications.
+    # Convert hex colors to descriptive names to prevent Gemini from rendering hex codes as text
+    def _hex_to_desc(hex_color):
+        color_names = {
+            "#272727": "dark charcoal", "#1A1A2E": "deep navy", "#F2F2F2": "light gray",
+            "#3C619E": "slate blue", "#FFFFFF": "white", "#000000": "black",
+            "#0F3460": "deep blue", "#E94560": "coral red", "#F77F00": "amber orange",
+            "#FCBF49": "golden yellow", "#06D6A0": "mint green", "#118AB2": "ocean blue",
+            "#EF476F": "hot pink", "#533483": "deep purple", "#2C3333": "dark teal",
+            "#395B64": "steel blue", "#708A5C": "sage green",
+        }
+        return color_names.get(hex_color, hex_color.replace("#", "color "))
 
-FORMAT: {meta['format']} aspect ratio, {meta['resolution']['width']}x{meta['resolution']['height']} pixels.
+    bg = canvas['background']
+    primary_desc = _hex_to_desc(bg['primary_color'])
+
+    prompt_text = f"""Generate a clean advertisement background image. Text will be added in post-processing — do NOT include any text.
+
+FORMAT: {meta['format']} aspect ratio.
+
+ABSOLUTE RULE — NO TEXT: The image must contain ZERO text, ZERO words, ZERO letters, ZERO numbers, ZERO labels, ZERO logos, ZERO watermarks. Not even a single character. Only visual content.
 
 STYLE: {gen_instructions['style_reference']}
 
 BACKGROUND:
-- Type: {canvas['background']['type']}
-- Primary color: {canvas['background']['primary_color']}"""
+- Type: {bg['type']}
+- Primary color: {primary_desc}"""
 
-    if canvas['background'].get('secondary_color'):
-        prompt_text += f"\n- Secondary color: {canvas['background']['secondary_color']}"
-        prompt_text += f"\n- Gradient direction: {canvas['background'].get('gradient_direction', 'top_to_bottom')}"
-    if canvas['background'].get('scene_description'):
-        prompt_text += f"\n- Scene: {canvas['background']['scene_description']}"
-    if canvas['background'].get('texture_description'):
-        prompt_text += f"\n- Texture: {canvas['background']['texture_description']}"
-
-    prompt_text += f"""
-
-LIGHTING:
-- Type: {canvas['lighting']['type']}
-- Direction: {canvas['lighting']['direction']}
-- Warmth: {canvas['lighting']['warmth']}
-- Intensity: {canvas['lighting']['intensity']}
-- Shadows: {canvas['lighting']['shadows']}
-
-COLOR MOOD:
-- Palette: {', '.join(canvas['color_mood']['palette'])}
-- Mood: {canvas['color_mood']['mood']}
-- Saturation: {canvas['color_mood']['saturation']}
-- Contrast: {canvas['color_mood']['contrast']}
-
-LAYOUT:
-- Type: {layout['type']}
-- Top zone ({layout['zones']['top']['height_percent']}%): {layout['zones']['top']['content']}"""
-
-    if layout['zones']['top'].get('background'):
-        prompt_text += f" on {layout['zones']['top']['background']} background"
+    if bg.get('secondary_color'):
+        prompt_text += f"\n- Secondary color: {_hex_to_desc(bg['secondary_color'])}"
+        prompt_text += f"\n- Gradient direction: {bg.get('gradient_direction', 'top_to_bottom')}"
+    if bg.get('scene_description'):
+        prompt_text += f"\n- Scene: {bg['scene_description']}"
+    if bg.get('texture_description'):
+        prompt_text += f"\n- Texture: {bg['texture_description']}"
 
     prompt_text += f"""
-- Middle zone ({layout['zones']['middle']['height_percent']}%): {layout['zones']['middle']['content']}
-- Bottom zone ({layout['zones']['bottom']['height_percent']}%): {layout['zones']['bottom']['content']}
+
+LIGHTING: {canvas['lighting']['type']}, {canvas['lighting']['direction']}, {canvas['lighting']['warmth']} warmth, {canvas['lighting']['intensity']} intensity.
+
+COLOR MOOD: {canvas['color_mood']['mood']}. {canvas['color_mood']['saturation']} saturation, {canvas['color_mood']['contrast']} contrast.
+
+COMPOSITION:
+- Layout: {layout['type']}
+- Leave clean space in the top ~25% for text overlay (will be added later)
+- Product/scene in the middle ~50%
+- Leave clean space at the bottom ~25% for buttons and labels (added later)
 - Alignment: {layout['alignment']}
-- Outer margins: {layout['margins']['outer']}
 
 PRODUCT PLACEMENT:"""
 
@@ -310,64 +322,27 @@ IMPORTANT: This is a NEGATIVE/PROBLEM scene. Do NOT show the advertised product.
         if elements:
             prompt_text += f"- Decorative elements: {', '.join(elements)}\n"
 
-    prompt_text += "\nTEXT OVERLAYS (render ONLY the text content below — correct German spelling, clean typography):\n"
-    prompt_text += "CRITICAL: Only render the actual text content. Do NOT render any font names, sizes, colors, CSS values, or technical specifications as visible text in the image.\n"
-    for i, overlay in enumerate(text_overlays, 1):
-        style = overlay['style']
-        font_desc = style['font_family']
-        if 'italic' in str(style.get('font_weight', '')):
-            font_desc += " italic"
-        if 'bold' in str(style.get('font_weight', '')):
-            font_desc += " bold"
+    # Logo is composited in post-processing, no need to tell Gemini about it
 
-        size_desc = "large" if "4" in str(style.get('font_size', '')) else "medium" if "2" in str(style.get('font_size', '')) else "small"
+    # Filter must_include to remove text-related items (text is handled by compositor)
+    must_include = [m for m in gen_instructions['must_include']
+                    if 'logo' not in m.lower() and 'headline' not in m.lower()
+                    and 'benefit' not in m.lower()]
+    if must_include:
+        prompt_text += f"\nMUST INCLUDE: {', '.join(must_include)}\n"
 
-        prompt_text += f"\n  Text {i} ({overlay['role']}):\n"
-        prompt_text += f"  - Render this text: \"{overlay['content']}\"\n"
-        prompt_text += f"  - Place at: {overlay['position']['x']}, {overlay['position']['y']}\n"
-        prompt_text += f"  - Style: {font_desc}, {size_desc} size, {style['color']} color\n"
-        prompt_text += f"  - Alignment: {style['text_align']}\n"
-
-        if overlay.get('emphasis_words'):
-            words = [w for w in overlay['emphasis_words'] if w]
-            if words:
-                emphasis_color = overlay.get('emphasis_style', {}).get('color', '')
-                prompt_text += f"  - Make these words stand out: {', '.join(words)}"
-                if emphasis_color:
-                    prompt_text += f" (in {emphasis_color})"
-                prompt_text += "\n"
-
-    badges = visual_elements.get('badges', [])
-    if badges:
-        prompt_text += "\nBADGES/BUTTONS:\n"
-        for badge in badges:
-            prompt_text += f"  - {badge['type']}: \"{badge['text']}\" at {badge['position']['x']},{badge['position']['y']}"
-            prompt_text += f" — {badge['style']['shape']} shape, bg:{badge['style']['background_color']}, text:{badge['style']['text_color']}\n"
-
-    if logo_visible:
-        logo = brand_elements['logo']
-        prompt_text += f"\nLOGO SPACE: Leave clean empty space at {logo['position']} (approximately 15% width, 4% height) for logo placement in post-processing. Do NOT render any logo text or wordmark — the real logo will be composited later.\n"
-
-    if brand_elements.get('trust_signals'):
-        signals = [s for s in brand_elements['trust_signals'] if s]
-        if signals:
-            prompt_text += f"\nTRUST SIGNALS (small text at bottom): {' | '.join(signals)}\n"
-
-    must_include = [m for m in gen_instructions['must_include'] if 'logo' not in m.lower() and 'wordmark' not in m.lower()]
-    prompt_text += f"\nMUST INCLUDE: {', '.join(must_include)}\n"
-    must_avoid = gen_instructions['must_avoid'] + [
-        "Do NOT render any brand logo or wordmark text — it will be added in post-processing",
-        "dirty or messy backgrounds, crumbs, dirty socks, cluttered surfaces, unwashed dishes — keep backgrounds clean and tidy even for casual/authentic styles",
-        "inventing product colors or variants that don't exist — only show the exact product provided",
+    avoid_items = [
+        "any text, words, letters, numbers, or labels",
+        "any logos or brand names",
+        "messy or cluttered backgrounds",
+        "AI artifacts or distorted anatomy",
     ]
     if is_negative_scene:
-        must_avoid += [
-            "ANY branded product, ANY recognizable brand name or logo — this is a negative/problem scene, show ONLY generic unbranded items",
-            "ANY reference to the advertised brand — the product shown must look like a cheap competitor, NOT the advertised product",
+        avoid_items += [
+            "any branded or recognizable products",
         ]
-    prompt_text += f"MUST AVOID: {', '.join(must_avoid)}\n"
-    prompt_text += f"\nQUALITY: {gen_instructions['quality_notes']}\n"
-    prompt_text += f"TEXT RENDERING: {gen_instructions['text_rendering_notes']}\n"
+    prompt_text += f"\nMUST AVOID: {', '.join(avoid_items)}.\n"
+    prompt_text += f"\nQUALITY: Photorealistic, 4K, clean, professional.\n"
 
     parts = []
     if image_data and not is_negative_scene:
@@ -378,11 +353,11 @@ IMPORTANT: This is a NEGATIVE/PROBLEM scene. Do NOT show the advertised product.
             }
         })
         parts.append({
-            "text": "Above is the product image to incorporate into the ad. Use this exact product (bottle/packaging design, label, colors) in the generated image.\n\n"
+            "text": "Above is the product image to incorporate into the ad background. Use this exact product in the generated image. Do NOT add any text or labels.\n\n"
         })
     elif is_negative_scene:
         parts.append({
-            "text": "IMPORTANT: This is a NEGATIVE scene showing a PROBLEM. Do NOT use any branded or recognizable product. Show only generic, unbranded items. No brand names, no logos, no recognizable product designs.\n\n"
+            "text": "IMPORTANT: This is a NEGATIVE scene showing a PROBLEM. Do NOT use any branded or recognizable product. Show only generic, unbranded items. No text.\n\n"
         })
 
     parts.append({"text": prompt_text})
@@ -594,14 +569,23 @@ def composite_all_overlays(image_bytes, ad_prompt):
     """Apply all compositor overlays: logo, social proof, payment icons, etc."""
     brand_elements = ad_prompt.get("brand_elements", {})
 
-    # 1. Logo
+    # 1. Logo — use small size and top_left to avoid headline overlap
     logo_config = brand_elements.get("logo", {})
     if logo_config.get("visible"):
+        # Avoid top_center if headline is in upper area (prevents overlap)
+        logo_pos = logo_config.get("position", "top_center")
+        has_headline_top = any(
+            o.get("position", {}).get("y") in ("upper_third", "upper_quarter", "top")
+            for o in ad_prompt.get("text_overlays", [])
+            if o.get("role") == "headline"
+        )
+        if has_headline_top and logo_pos == "top_center":
+            logo_pos = "top_left"
         image_bytes = composite_logo_in_memory(
             image_bytes,
-            logo_config.get("position", "top_center"),
+            logo_pos,
             logo_config.get("color_mode", "auto"),
-            logo_config.get("size", "medium")
+            logo_config.get("size", "small")
         )
 
     # 2. Social proof overlay (if file exists)
@@ -667,7 +651,13 @@ def generate_single_ad(api_key, sb, brand_id, batch_id, prompt_data, index, crea
     # Decode image
     image_bytes = base64.standard_b64decode(image_data)
 
-    # Composite all overlays (logo, social proof, payment icons, etc.)
+    # Step 1: Composite text overlays programmatically (headlines, CTAs, prices, etc.)
+    if HAS_TEXT_COMPOSITOR:
+        image_bytes = composite_text(image_bytes, ad_prompt)
+    else:
+        print("  Warning: text_compositor not available, skipping text overlays")
+
+    # Step 2: Composite brand overlays (logo, social proof, payment icons, etc.)
     image_bytes = composite_all_overlays(image_bytes, ad_prompt)
 
     # Build filename (ASCII-safe for Supabase Storage)

@@ -55,8 +55,10 @@ def scrape_ads(api_key, page_id, max_ads=0):
 
     ad_library_url = (
         f"https://www.facebook.com/ads/library/"
-        f"?active_status=all&ad_type=all&country=ALL"
-        f"&media_type=image&search_type=page&view_all_page_id={page_id}"
+        f"?active_status=all&ad_type=all&country=CH"
+        f"&is_targeted_country=false&media_type=all&search_type=page"
+        f"&sort_data[direction]=desc&sort_data[mode]=total_impressions"
+        f"&view_all_page_id={page_id}"
     )
 
     payload = {

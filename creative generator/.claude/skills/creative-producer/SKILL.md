@@ -17,10 +17,11 @@ Nachdem Prompts (von sales-event-producer, competitor-cloner, angle-generator od
 
 ## Workflow
 1. JSON-Prompts werden übergeben (von anderen Skills oder manuell)
-2. Script sendet JSON-Prompt + Produktbild an Gemini
-3. Multi-Layer Compositor fügt Overlays hinzu (Logo, Social Proof, Payment Icons)
-4. Upload nach Supabase Storage + DB Update
-5. Creatives erscheinen live im Board
+2. Script sendet JSON-Prompt + Produktbild an Gemini — **Gemini generiert NUR das Bild (Szene/Produkt), KEINEN Text**
+3. **Text Compositor** (PIL/Pillow) rendert Headlines, CTAs, Preise, Badges pixelgenau als Layer
+4. **Logo Compositor** fügt Logo, Social Proof, Payment Icons hinzu
+5. Upload nach Supabase Storage + DB Update
+6. Creatives erscheinen live im Board
 
 ## Inputs
 - JSON-Prompts-Datei (von anderen Skills oder manuell erstellt)
@@ -67,7 +68,8 @@ Verfügbare Angles in `angles/angles.json`:
 - **testimonial**: Echte Kundenzitate als Creative
 
 ## Scripts
-- `scripts/main.py` — Orchestrierung: Gemini API Call, Compositor, Supabase Upload
+- `scripts/main.py` — Orchestrierung: Gemini API Call, Text Compositor, Logo Compositor, Supabase Upload
+- `scripts/text_compositor.py` — Programmatisches Text-Rendering (Headlines, CTAs, Preise, Badges) via PIL
 - `scripts/prompt_schema.json` — JSON-Prompt-Schema
 
 ## Ausführung
@@ -88,14 +90,18 @@ Bei negativen Szenen darf das Produkt NICHT im Bild erscheinen.
 ### Diversity-First
 Jedes Creative soll sich vom vorherigen unterscheiden — andere Schrift, anderes Layout, andere Farbgebung, anderer Stil.
 
-### Safe Zone (9:16 Format)
-Hauptcontent im mittleren 1:1 Bereich. Logo oben, Social Proof unten.
+### Text Compositor
+Text wird NICHT von Gemini gerendert, sondern programmatisch via PIL/Pillow:
+- `text_compositor.py` rendert Headlines, Subheadlines, CTAs, Preise, Badges, Benefits, Trust Signals
+- Fonts: Jost (Regular/Medium/SemiBold/Bold) in `branding/fonts/`
+- Auto-Erkennung: heller Text auf dunklem Hintergrund und umgekehrt
+- Pixel-genaue Kontrolle über Positionen und Größen
 
 ### Schriftart
-Jost Bold als Standard, aber bewusst auch andere Schriften nutzen für Diversity.
+Jost als Standard (in `branding/fonts/`), aber bewusst auch andere Schriften nutzen für Diversity.
 
 ## Verbindungen
 - Wird von `sales-event-producer` und `competitor-cloner` als Engine genutzt
 - Liest Angles aus `angles/angles.json`
 - Referenziert `meta-andromeda` Knowledge
-- Liest `branding/brand_guidelines.json`
+- Liest `branding/brand_guidelines.json` (optional, für Farben/Fonts)

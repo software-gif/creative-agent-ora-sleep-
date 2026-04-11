@@ -29,12 +29,12 @@ BG_TYPES_PRODUCT = ["solid_color", "gradient", "texture"]
 BG_TYPES_LIFESTYLE = ["photo_scene", "blurred_lifestyle"]
 
 LIFESTYLE_SCENES = [
-    "Gemütliches Schlafzimmer, warmes Licht, weiche Bettwäsche, Person schläft friedlich",
-    "Modernes Schlafzimmer, Morgenlicht fällt durch Vorhänge, aufgewachte Person streckt sich zufrieden",
-    "Minimalistisches Schlafzimmer im Schweizer Stil, saubere Linien, Holzakzente, Matratze im Fokus",
-    "Dunkles Schlafzimmer bei Nacht, Monlicht, ruhige Atmosphäre, tiefer Schlaf",
-    "Helles Schlafzimmer am Morgen, Kaffeetasse auf Nachttisch, Person sitzt lächelnd im Bett",
-    "Paar im Bett, beide schlafen ruhig ohne sich gegenseitig zu stören",
+    "Warmes, helles Schlafzimmer mit Holzmöbeln im natürlichen Stil, Ora Matratze sichtbar mit 'ora' Schriftzug an der Seite, weiches Morgenlicht",
+    "Frau streckt sich glücklich nach dem Aufwachen auf Ora Matratze, Morgenlicht fällt durch Vorhänge, warme Farbtöne",
+    "Person schläft friedlich auf Ora Matratze, kuschelige Bettwäsche, warme Farbtöne, ruhige Atmosphäre",
+    "Clean Product Shot: Matratze auf Holzbettgestell, minimalistischer Raum, helle Wände, professionelle Beleuchtung",
+    "Paar im Bett, entspannte Atmosphäre, gemütliches Licht, warme Ausstrahlung, beide zufrieden",
+    "Dunkles, stimmungsvolles Schlafzimmer, Person schläft tief, dramatische Beleuchtung, Premium-Atmosphäre",
 ]
 
 FONTS = ["sans_bold", "sans_modern", "serif_elegant"]
@@ -46,15 +46,20 @@ def load_configs():
     guidelines_path = os.path.join(PROJECT_ROOT, "branding", "brand_guidelines.json")
     angles_path = os.path.join(PROJECT_ROOT, "angles", "angles.json")
 
-    for p, name in [(brand_path, "brand.json"), (guidelines_path, "brand_guidelines.json"), (angles_path, "angles.json")]:
+    for p, name in [(brand_path, "brand.json"), (angles_path, "angles.json")]:
         if not os.path.exists(p):
             print(f"Error: {name} not found at {p}")
             sys.exit(1)
 
     with open(brand_path) as f:
         brand = json.load(f)
-    with open(guidelines_path) as f:
-        guidelines = json.load(f)
+
+    # Guidelines are optional — use defaults if missing
+    guidelines = {}
+    if os.path.exists(guidelines_path):
+        with open(guidelines_path) as f:
+            guidelines = json.load(f)
+
     with open(angles_path) as f:
         angles_data = json.load(f)
 
@@ -130,9 +135,224 @@ def pick_styles(count, style_filter):
     return styles
 
 
+CTA_VARIANTS = [
+    "Jetzt testen", "Mehr erfahren", "Jetzt entdecken", "Jetzt bestellen",
+    "Kostenlos testen", "Jetzt upgraden", "Schlaf verbessern",
+    "Jetzt sichern", "Gratis testen",
+]
+
+TRUST_SIGNAL_VARIANTS = [
+    "Swiss Made | Testsieger 2026",
+    "4.5 ★ auf Trustpilot | 237 Bewertungen",
+    "Swiss Made | 108 zufriedene Kunden",
+    "Testsieger 2026 | Kostenlose Lieferung",
+    "Swiss Made Qualität | 60 Nächte testen",
+    "237 Trustpilot Bewertungen | 4.5 ★",
+]
+
+
+def _build_text_overlays(angle, product, brand, headline, hook, benefits, font, primary_color, creative_type, style):
+    """Build diverse text overlays based on angle and creative type.
+
+    Not every creative needs all elements. Vary what's shown for diversity.
+    """
+    overlays = []
+    is_dark_bg = primary_color.startswith("#1") or primary_color.startswith("#2") or primary_color.startswith("#0") or primary_color.startswith("#3")
+    text_color = "#FFFFFF" if is_dark_bg else "#272727"
+
+    # Angle-specific high-performing headline patterns (mixed in ~40% of the time)
+    angle_type = angle.get("type", "")
+    used_hook = False
+    if random.random() < 0.4:
+        headline_hooks = {
+            "Problem/Pain": [
+                "Schlechter Schlaf? War gestern.",
+                "Rückenschmerzen nach dem Aufstehen?",
+                "Jede Nacht dasselbe Problem.",
+            ],
+            "Benefit": [
+                "Schlaf, der dein Leben verändert.",
+                "Erholt aufwachen. Besser leben.",
+                "Ab der ersten Nacht besser schlafen.",
+            ],
+            "Proof": [
+                "93% spüren mehr Energie.",
+                "4.5 Sterne auf Trustpilot.",
+                "108 Kunden, eine Meinung.",
+            ],
+            "Offer": [
+                "Testsieger zum besten Preis.",
+                "Jetzt ab CHF 899.",
+                "Schweizer Qualität zum besten Preis.",
+            ],
+            "Story": [
+                "Schlaf, made in Switzerland.",
+                "Einmal Ora, immer Ora.",
+            ],
+            "Education": [
+                "Was passiert nach 7h auf der richtigen Matratze?",
+                "Ocean Cool Technologie erklärt.",
+            ],
+            "Curiosity": [
+                "3 Matratzen-Mythen, die dich Schlaf kosten.",
+                "Was deine Matratze dir verschweigt.",
+            ],
+        }
+        alt_headlines = headline_hooks.get(angle_type, [])
+        if alt_headlines:
+            headline = random.choice(alt_headlines)
+            used_hook = True
+
+    # Cap headline length — max ~60 chars to prevent 7-line monsters
+    if len(headline) > 60:
+        # Shorten to first sentence or clause
+        for sep in [". ", " — ", " – ", ", "]:
+            if sep in headline[:55]:
+                headline = headline[:headline.index(sep, 0, 55) + len(sep)].rstrip(", —–")
+                break
+
+    # 1. HEADLINE — always present (the main hook)
+    overlays.append({
+        "role": "headline",
+        "content": headline,
+        "position": {"x": "center", "y": "upper_third"},
+        "style": {
+            "font_family": font,
+            "font_weight": "bold",
+            "font_size": "xl",
+            "color": text_color,
+            "text_transform": random.choice(["none", "uppercase"]),
+            "text_align": "center",
+        },
+    })
+
+    # 1b. SUBHEADLINE — ~50% of the time, positioned ABOVE the headline
+    # Subheadline must NEVER be the same as the headline
+    add_subheadline = random.random() < 0.5
+    if add_subheadline:
+        subheadline_variants = {
+            "Problem/Pain": ["Das kennt jeder.", "Kommt dir das bekannt vor?"],
+            "Benefit": ["Dein Tag beginnt mit einer Nacht auf Ora.", "Das Ora Versprechen."],
+            "Proof": ["Das sagen unsere Kunden.", "Echte Ergebnisse."],
+            "Offer": ["Nur für kurze Zeit.", "Das Ora Angebot."],
+            "Story": ["So geht Schlaf.", "Echte Kunden, echte Geschichten."],
+            "Education": ["Wusstest du das?", "Schlaf-Wissenschaft."],
+            "Curiosity": ["Überraschende Fakten.", "Das wissen die wenigsten."],
+        }
+        sub_options = subheadline_variants.get(angle_type, ["Schlaf neu erleben."])
+        # Filter out any subheadline that matches the headline
+        sub_options = [s for s in sub_options if s.lower().rstrip(".") not in headline.lower()]
+        if sub_options:
+            overlays.append({
+                "role": "subheadline",
+                "content": random.choice(sub_options),
+                "position": {"x": "center", "y": "upper_quarter", "above_headline": True},
+                "style": {
+                    "font_family": "sans_medium",
+                    "font_weight": "medium",
+                    "font_size": "sm",
+                    "color": text_color,
+                    "text_transform": "none",
+                    "text_align": "center",
+                },
+            })
+
+    # Randomly decide which additional elements to add (for diversity)
+    add_cta = random.random() < 0.7
+    add_trust = random.random() < 0.6
+    add_price = angle["type"] == "Offer" or random.random() < 0.3
+    add_benefits = creative_type == "product_static" and random.random() < 0.4
+
+    # 2. CTA BUTTON — Ora Sleep warm gold/orange
+    if add_cta:
+        overlays.append({
+            "role": "cta",
+            "content": random.choice(CTA_VARIANTS),
+            "position": {"x": "center", "y": "lower_third"},
+            "style": {
+                "font_family": "sans_bold",
+                "font_weight": "bold",
+                "font_size": "md",
+                "color": "#1A1A2E",
+                "background_color": "#E8A838",
+                "text_transform": "uppercase",
+                "text_align": "center",
+            },
+        })
+
+    # 3. PRICE (for Offer angles or randomly)
+    if add_price:
+        price_text = f"ab CHF {int(product.get('price_from', 899))}"
+        if product.get('compare_at_price'):
+            price_text = f"ab CHF {int(product['price_from'])} statt CHF {int(product['compare_at_price'])}"
+        overlays.append({
+            "role": "price",
+            "content": price_text,
+            "position": {"x": "center"},
+            "style": {
+                "font_family": "sans_bold",
+                "font_weight": "bold",
+                "font_size": "lg",
+                "color": text_color,
+                "text_align": "center",
+            },
+        })
+
+    # 4. TRUST SIGNALS (bottom area)
+    if add_trust:
+        overlays.append({
+            "role": "trust_signals",
+            "content": random.choice(TRUST_SIGNAL_VARIANTS),
+            "position": {"x": "center", "y": "bottom_safe"},
+            "style": {
+                "font_family": "sans",
+                "font_weight": "regular",
+                "font_size": "xs",
+                "color": "auto",
+                "text_align": "center",
+            },
+        })
+
+    # 5. BENEFITS LIST (for product_static)
+    if add_benefits and benefits:
+        benefit_text = ";".join(benefits[:3])
+        overlays.append({
+            "role": "benefit_list",
+            "content": benefit_text,
+            "position": {"x": "left", "y": "lower_quarter"},
+            "style": {
+                "font_family": "sans_medium",
+                "font_weight": "medium",
+                "font_size": "sm",
+                "color": text_color,
+                "text_align": "left",
+            },
+        })
+
+    # 6. TRUST BAR — 4-icon bar at the very bottom (~60% of creatives)
+    add_trust_bar = random.random() < 0.6
+    if add_trust_bar:
+        overlays.append({
+            "role": "trust_bar",
+            "content": "Kostenlose Lieferung;200 Nächte testen;10 Jahre Garantie;Swiss Made",
+            "position": {"x": "center", "y": "bottom"},
+            "style": {
+                "font_family": "sans",
+                "font_weight": "regular",
+                "font_size": "xs",
+                "color": "#FFFFFF",
+                "text_align": "center",
+            },
+        })
+
+    return overlays
+
+
 def build_prompt(angle, product, brand, guidelines, fmt, creative_type, style, variant):
     """Build a single creative-producer compatible JSON prompt."""
-    colors = guidelines.get("colors", {})
+    # Extract colors — handle both old flat structure and new nested structure
+    colors_raw = guidelines.get("colors", {})
+    colors = colors_raw.get("website_palette", colors_raw)
     resolution = FORMAT_RESOLUTIONS[fmt]
 
     # Pick headline and hook from angle
@@ -161,9 +381,10 @@ def build_prompt(angle, product, brand, guidelines, fmt, creative_type, style, v
         primary_color = palette[0]
         accent_color = palette[1]
     else:
-        primary_color = colors.get("primary", "#272727")
-        accent_color = colors.get("accent", "#3C619E")
-        palette = [primary_color, colors.get("secondary", "#F2F2F2"), accent_color, "#FFFFFF"]
+        primary_color = colors.get("dark", colors.get("primary", "#272727"))
+        accent_color = colors.get("navy", colors.get("accent", "#3C619E"))
+        secondary_color = colors.get("light_gray", colors.get("secondary", "#F2F2F2"))
+        palette = [primary_color, secondary_color, accent_color, "#FFFFFF"]
 
     # Logo visibility (diverse: sometimes yes, sometimes no)
     show_logo = random.random() > 0.3
@@ -171,8 +392,13 @@ def build_prompt(angle, product, brand, guidelines, fmt, creative_type, style, v
     # Font choice
     font = random.choice(FONTS)
 
-    # Product image
-    product_image = f"products/images/{product['handle']}/0.jpg"
+    # Product image — rotate through all available images
+    img_dir = os.path.join(PROJECT_ROOT, "products", "images", product['handle'])
+    if os.path.isdir(img_dir):
+        available_images = sorted([f for f in os.listdir(img_dir) if f.endswith(('.jpg', '.jpeg', '.png', '.webp'))])
+    else:
+        available_images = ["0.jpg"]
+    product_image = f"products/images/{product['handle']}/{random.choice(available_images)}"
 
     # Scene type
     scene_type = "negative" if angle["type"] == "Problem/Pain" and random.random() < 0.4 else "positive"
@@ -233,27 +459,18 @@ def build_prompt(angle, product, brand, guidelines, fmt, creative_type, style, v
                 "surface": None,
                 "decorative_elements": [],
             },
-            "text_overlays": [
-                {
-                    "role": "headline",
-                    "content": headline,
-                    "position": {"x": "center", "y": "upper_third"},
-                    "style": {
-                        "font_family": font,
-                        "font_weight": "bold",
-                        "font_size": random.choice(["xl", "xxl"]),
-                        "color": "#FFFFFF" if primary_color.startswith("#1") or primary_color.startswith("#2") or primary_color.startswith("#0") else primary_color,
-                        "letter_spacing": "normal",
-                        "text_transform": random.choice(["none", "uppercase"]),
-                        "line_height": 1.2,
-                        "max_width_percent": 85,
-                        "text_align": "center",
-                    },
-                    "decoration": {"background": None, "shadow": "subtle"},
-                    "emphasis_words": [],
-                    "emphasis_style": {},
-                },
-            ],
+            "text_overlays": _build_text_overlays(
+                angle=angle,
+                product=product,
+                brand=brand,
+                headline=headline,
+                hook=hook,
+                benefits=benefits,
+                font=font,
+                primary_color=primary_color,
+                creative_type=creative_type,
+                style=style,
+            ),
             "visual_elements": {
                 "badges": [],
                 "dividers": [],
@@ -273,18 +490,19 @@ def build_prompt(angle, product, brand, guidelines, fmt, creative_type, style, v
             "generation_instructions": {
                 "style_reference": f"{'Experimentelles' if style == 'off_brand' else 'Clean, Swiss'} {'Lifestyle' if is_lifestyle else 'Product'} Ad. Angle: {angle['name']}. Format: {fmt}. {'Mutige Farben und Layouts.' if style == 'off_brand' else 'Minimalistisch, professionell.'}",
                 "must_include": [
-                    f'Headline: "{headline}"',
-                    "Lifestyle Szene" if is_lifestyle else f"Produkt: {product['name']}",
-                ] + [f"Benefit: {b}" for b in benefits],
+                    "Lifestyle Szene mit Schlafzimmer-Setting" if is_lifestyle else f"Product: {product['name']} mattress clearly visible",
+                    "Clean space in top area for text overlay",
+                    "Clean space in bottom area for CTA/trust signals",
+                ],
                 "must_avoid": [
-                    "Health claims (heilt, garantiert, medizinisch bewiesen)",
-                    "Any brand logo text — composited in post-processing" if show_logo else "",
+                    "ANY text, words, letters, numbers, labels, or typography in the image",
+                    "Any brand logo or wordmark — composited in post-processing",
                     "More than one product",
                     "Cluttered backgrounds",
-                    "AI artifacts",
+                    "AI artifacts, distorted faces, extra limbs",
                 ],
-                "quality_notes": "4K quality, no watermarks, photorealistic. German text correctly spelled.",
-                "text_rendering_notes": "Clean typography, no overlapping text. All text in German.",
+                "quality_notes": "4K quality, no watermarks, photorealistic. Clean, professional advertising photography.",
+                "text_rendering_notes": "DO NOT render any text in the image. Text will be added in post-processing.",
             },
         },
         "product_image": product_image,

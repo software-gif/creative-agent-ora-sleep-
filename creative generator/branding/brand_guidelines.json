@@ -1,92 +1,126 @@
 {
+  "_meta": {
+    "source": "orasleep.ch scraped data + kick-off meeting notes",
+    "philosophy": "MAXIMALE DIVERSITY — Andromeda Strategy. These are starting points and inspiration, NOT rigid rules. Performance > Brand consistency. Every creative should look different.",
+    "last_updated": "2026-04-10"
+  },
+
   "typography": {
     "primary_font": "Jost",
-    "primary_weight": "Bold",
-    "secondary_font": "Jost",
-    "secondary_weight": "Regular",
-    "heading_style": "Clean, bold, minimal letter-spacing",
-    "notes": "Jost Bold (700) für Headlines, Jost Regular (400) für Body. Schweizer Klarheit und Präzision."
-  },
-  "colors": {
-    "primary": "#272727",
-    "secondary": "#F2F2F2",
-    "accent": "#3C619E",
-    "success": "#708A5C",
-    "text_dark": "#272727",
-    "text_light": "#FFFFFF",
-    "background_light": "#F8F8F8",
-    "background_dark": "#272727",
-    "palette_notes": "Neutral und professionell. Dunkles Charcoal als Hauptfarbe, Slate Blue als Akzent, helles Grau für Hintergründe. Swiss Design Sensibility."
-  },
-  "sales_event_colors": {
-    "valentinstag": { "primary": "#E91E63", "secondary": "#FCE4EC", "accent": "#AD1457" },
-    "ostern": { "primary": "#8BC34A", "secondary": "#F1F8E9", "accent": "#FFD54F" },
-    "muttertag": { "primary": "#E91E63", "secondary": "#FFF0F5", "accent": "#FF80AB" },
-    "vatertag": { "primary": "#1565C0", "secondary": "#E3F2FD", "accent": "#42A5F5" },
-    "pride_day": { "primary": "#FF5722", "secondary": "#FFF3E0", "accent": "#7C4DFF" },
-    "halloween": { "primary": "#FF6F00", "secondary": "#1A1A1A", "accent": "#FF8F00" },
-    "singles_day": { "primary": "#E53935", "secondary": "#FFEBEE", "accent": "#FF1744" },
-    "black_month": { "primary": "#212121", "secondary": "#B71C1C", "accent": "#FFD700" },
-    "black_week": { "primary": "#212121", "secondary": "#B71C1C", "accent": "#FFD700" },
-    "black_friday": { "primary": "#000000", "secondary": "#B71C1C", "accent": "#FFD700" },
-    "cyber_week": { "primary": "#00BCD4", "secondary": "#0D1B2A", "accent": "#00E5FF" },
-    "cyber_monday": { "primary": "#00BCD4", "secondary": "#0D1B2A", "accent": "#00E5FF" },
-    "nikolaus": { "primary": "#C62828", "secondary": "#FFCDD2", "accent": "#FFD700" },
-    "weihnachten": { "primary": "#C62828", "secondary": "#1B5E20", "accent": "#FFD700" },
-    "neujahr": { "primary": "#FFD700", "secondary": "#1A1A1A", "accent": "#FFFFFF" }
-  },
-  "visual_style": {
-    "overall": "Minimalistisch, sauber, Schweizer Design. Weiße Hintergründe mit dunkler Typografie. Professionell und vertrauenswürdig.",
-    "backgrounds": [
-      "Clean weiß oder hellgrau (#F8F8F8)",
-      "Schlafzimmer-Ambiente (warm, gemütlich)",
-      "Event-themed Hintergrund (saisonal)"
+    "primary_weights": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "available_font_files": [
+      "fonts/Jost-Regular.ttf",
+      "fonts/Jost-Medium.ttf",
+      "fonts/Jost-SemiBold.ttf",
+      "fonts/Jost-Bold.ttf"
     ],
-    "product_presentation": "Matratze als Hero-Shot, Clean Freisteller, gemütliche Schlafzimmer-Szenen",
-    "photography_style": "Hell, luftig, einladend. Warme Töne, weiche Textilien, Schlafkomfort betonen."
+    "diversity_note": "Jost is the website font but creatives can use ANY font that fits the concept. 80+ fonts are in active use across campaigns. Mix serif, sans-serif, display, handwritten — whatever performs. No font is mandatory."
   },
-  "ad_layout": {
-    "format": "9:16 (1080x1920) mit 1:1 Safe Zone",
-    "safe_zone": {
-      "description": "Wichtige Infos (Produkt, Headline, Benefits) im mittleren 1:1 Bereich (1080x1080). Logo oben, Social Proof unten — außerhalb der 1:1 Zone.",
-      "content_area": { "y_start_percent": 23, "y_end_percent": 77, "notes": "1:1 Bereich = Mitte des 9:16 Formats" },
-      "logo_area": { "position": "top_center", "y_percent": 5 },
-      "social_proof_area": { "position": "bottom_center", "y_percent": 85 }
+
+  "colors": {
+    "website_palette": {
+      "dark": "#272727",
+      "white": "#ffffff",
+      "navy": "#3c619e",
+      "light_gray": "#f2f2f2",
+      "success_green": "#708a5c"
     },
-    "elements_order": [
-      "Logo (oben, außerhalb Safe Zone)",
-      "Headline (oberer Rand der Safe Zone)",
-      "Produkt (Mitte)",
-      "Benefits mit Icons (unter dem Produkt)",
-      "CTA Button (unterer Rand der Safe Zone)",
-      "Sub-Headline / Offer (unter CTA)",
-      "Social Proof / Payment Icons (unten, außerhalb Safe Zone)"
+    "diversity_note": "These are the website colors, not creative constraints. Use them as a starting point or ignore them entirely. Bold neons, pastels, gradients, black-and-white, warm earth tones — whatever drives performance. The best-performing ad ('93 Prozent') used simple high-contrast text, not brand colors."
+  },
+
+  "visual_style": {
+    "website_direction": "Clean, minimalist, Swiss design. High contrast. White space.",
+    "button_style": {
+      "primary": { "bg": "#272727", "text": "#ffffff", "radius": "0.375rem" },
+      "secondary": { "bg": "#3c619e", "text": "#ffffff", "radius": "0.375rem" }
+    },
+    "photography_direction": "Lifestyle-oriented, comfort/rest focused, real moments",
+    "diversity_note": "The website is minimalist but creatives are NOT limited to this style. Experiment freely: bold typography, UGC-style, editorial, data-visualization, meme formats, testimonial cards, comparison layouts, product close-ups, abstract, collage — anything goes. Top performers are often the SIMPLEST creatives. No logo required. No headline required. No fixed element order."
+  },
+
+  "tone_of_voice": {
+    "address_form": "du-form (informal)",
+    "language": "German (Swiss market), occasional Swiss German in UGC/reviews",
+    "positioning": "Swiss Made premium, data-driven, Testsieger",
+    "spectrum": [
+      "Formal/expert: Scientific claims, test results, comparisons",
+      "Casual/emotional: Customer stories, morning-feeling, life-change",
+      "Direct/urgent: Pain points, poor sleep consequences",
+      "Playful/provocative: Pattern interrupts, unexpected angles"
+    ],
+    "key_themes": [
+      "Einschlafzeit (time to fall asleep)",
+      "Rückenschmerzen (back pain relief)",
+      "Schwitzen (temperature regulation)",
+      "Morgen-Feeling (morning freshness)",
+      "Swiss Made quality",
+      "Testsieger 2026"
+    ],
+    "diversity_note": "Vary tone dramatically between creatives. One ad can be a clinical data point, the next a raw emotional testimonial, the next a provocative question. Match tone to audience segment and placement."
+  },
+
+  "trust_signals": {
+    "trustpilot": {
+      "rating": 4.5,
+      "total_reviews": 237,
+      "five_star": 143,
+      "four_star": 37
+    },
+    "judge_me": {
+      "nps_score": 8.6,
+      "responses": 108
+    },
+    "certifications": [
+      "Swiss Made",
+      "Testsieger 2026"
+    ],
+    "usage_note": "Use trust signals flexibly — sometimes a single data point is more powerful than showing everything. '143 Fünf-Sterne-Bewertungen' can hit harder than a generic badge. Mix and match. Sometimes use none at all."
+  },
+
+  "ad_formats": {
+    "portrait_9_16": {
+      "width": 1080,
+      "height": 1920,
+      "use_cases": ["Instagram Stories", "Reels", "TikTok"]
+    },
+    "square_1_1": {
+      "width": 1080,
+      "height": 1080,
+      "use_cases": ["Instagram Feed", "Facebook Feed"]
+    },
+    "portrait_4_5": {
+      "width": 1080,
+      "height": 1350,
+      "use_cases": ["Instagram Feed", "Facebook Feed (max real estate)"]
+    },
+    "note": "These are canvas sizes, not layout constraints. Fill them however the creative demands."
+  },
+
+  "diversity_rules": {
+    "philosophy": "Andromeda Strategy — cast a wide net with maximum creative variety to find what resonates with different audience segments.",
+    "principles": [
+      "Every creative should look visually distinct from the last",
+      "No fixed templates — structure follows concept",
+      "Logo is optional, not mandatory",
+      "Headline is optional, not mandatory",
+      "Simple often beats complex (the '93 Prozent' ad principle)",
+      "Performance data overrides any brand rule",
+      "Test wildly different approaches: data-driven, emotional, UGC, editorial, minimal, maximal",
+      "Different audience segments need different visual languages",
+      "If something looks too 'same-y' as previous creatives, change it"
+    ],
+    "anti_patterns": [
+      "DO NOT create a fixed template system",
+      "DO NOT require logo on every creative",
+      "DO NOT require headline on every creative",
+      "DO NOT stick to one color palette",
+      "DO NOT use the same layout twice in a row",
+      "DO NOT prioritize brand consistency over performance"
     ]
-  },
-  "compositor_elements": {
-    "logo": {
-      "files": ["branding/logo_dark.png", "branding/logo_white.png"],
-      "default_position": "top_center",
-      "notes": "Logo immer im oberen Bereich. Hell auf dunklem BG, dunkel auf hellem BG."
-    },
-    "social_proof": {
-      "file": "branding/social_proof.png",
-      "text_fallback": "Swiss Made | Schlafkomfort aus der Schweiz",
-      "position": "bottom_center"
-    },
-    "payment_icons": {
-      "file": "branding/payment_icons.png",
-      "position": "bottom_center",
-      "notes": "PayPal, Visa, Mastercard, Apple Pay, Klarna etc."
-    },
-    "color_variants": {
-      "notes": "Kleine farbige Kreise die alle verfügbaren Farben des Produkts zeigen. Position: unter dem Produkt oder am unteren Rand.",
-      "position": "bottom_center"
-    },
-    "scarcity": {
-      "elements": ["roter Punkt (live indicator)", "Text: 'Nur noch heute' / 'Endet bald'"],
-      "position": "above_cta",
-      "color": "#E53935"
-    }
   }
 }
