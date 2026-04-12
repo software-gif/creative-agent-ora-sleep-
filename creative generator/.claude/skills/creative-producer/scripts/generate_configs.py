@@ -26,24 +26,38 @@ PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", "..", ".."))
 # ---------------------------------------------------------------------------
 
 ORA_COLORS = [
-    "#2D3748",  # dark blue-gray
+    "#2D3748",  # dark blue-gray (Ora primary)
     "#1A202C",  # navy
     "#2D2D2D",  # charcoal
     "#F5F0EB",  # warm cream
     "#FFFFFF",  # white
     "#1A1A2E",  # deep navy
+    "#272727",  # Ora brand dark
+    "#E8D5C4",  # warm beige (lifestyle)
+    "#1E3A5F",  # ocean blue
+    "#3A3A5C",  # slate
+    "#F4EDE4",  # off-white warm
+    "#0F1419",  # almost black
 ]
 
-ORA_DARK_COLORS = ["#2D3748", "#1A202C", "#2D2D2D", "#1A1A2E"]
-ORA_LIGHT_COLORS = ["#F5F0EB", "#FFFFFF"]
+ORA_DARK_COLORS = ["#2D3748", "#1A202C", "#2D2D2D", "#1A1A2E", "#272727", "#1E3A5F", "#0F1419"]
+ORA_LIGHT_COLORS = ["#F5F0EB", "#FFFFFF", "#E8D5C4", "#F4EDE4"]
 
 GRADIENTS = [
-    {"color": "#2D3748", "gradient_to": "#1A202C", "direction": "top_to_bottom"},   # dark-to-darker
-    {"color": "#1A1A2E", "gradient_to": "#2D3748", "direction": "top_to_bottom"},   # navy-to-charcoal
-    {"color": "#F5F0EB", "gradient_to": "#FFFFFF", "direction": "top_to_bottom"},   # cream-to-white
-    {"color": "#2D2D2D", "gradient_to": "#1A1A2E", "direction": "diagonal"},        # charcoal diagonal
-    {"color": "#1A202C", "gradient_to": "#2D3748", "direction": "bottom_to_top"},   # dark reverse
-    {"color": "#FFFFFF", "gradient_to": "#F5F0EB", "direction": "top_to_bottom"},   # white-to-cream
+    # Dark gradients
+    {"color": "#2D3748", "gradient_to": "#1A202C", "direction": "top_to_bottom"},
+    {"color": "#1A1A2E", "gradient_to": "#2D3748", "direction": "top_to_bottom"},
+    {"color": "#2D2D2D", "gradient_to": "#1A1A2E", "direction": "diagonal"},
+    {"color": "#1A202C", "gradient_to": "#2D3748", "direction": "bottom_to_top"},
+    {"color": "#272727", "gradient_to": "#0F1419", "direction": "top_to_bottom"},
+    {"color": "#1E3A5F", "gradient_to": "#0F1419", "direction": "diagonal"},
+    # Light gradients
+    {"color": "#F5F0EB", "gradient_to": "#FFFFFF", "direction": "top_to_bottom"},
+    {"color": "#FFFFFF", "gradient_to": "#F5F0EB", "direction": "top_to_bottom"},
+    {"color": "#E8D5C4", "gradient_to": "#F4EDE4", "direction": "top_to_bottom"},
+    {"color": "#F4EDE4", "gradient_to": "#E8D5C4", "direction": "diagonal"},
+    # Dark-to-warm accent
+    {"color": "#1A1A2E", "gradient_to": "#3A3A5C", "direction": "top_to_bottom"},
 ]
 
 # Product images categorized

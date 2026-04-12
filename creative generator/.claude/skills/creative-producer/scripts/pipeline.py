@@ -466,23 +466,44 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
         if style == "italic":
             font_weight = "medium"  # No italic Jost, use medium as stand-in
 
-        font_size = int(canvas_h * 0.055)
-        font = _load_font(fonts_dir, font_weight, font_size)
-
-        y_pos = int(canvas_h * 0.16)
-
-        # Handle explicit line breaks
-        raw_lines = headline.split("\\n") if "\\n" in headline else headline.split("\n")
-        all_lines = []
-        for raw_line in raw_lines:
-            wrapped = _wrap_text(raw_line.strip(), font, max_text_w)
-            all_lines.extend(wrapped)
-
-        # Apply uppercase if requested
+        # Apply uppercase if requested (before wrapping so width calc is correct)
         if style == "uppercase":
-            all_lines = [line.upper() for line in all_lines]
+            headline = headline.upper()
 
-        line_spacing = int(font_size * 1.3)
+        # Start with default size, shrink if the wrapped block is too tall
+        font_size = int(canvas_h * 0.055)
+        max_headline_h = int(canvas_h * 0.28)  # Max 28% of canvas for headline
+        min_font_size = int(canvas_h * 0.032)
+
+        all_lines = []
+        while font_size >= min_font_size:
+            font = _load_font(fonts_dir, font_weight, font_size)
+            # Handle explicit line breaks
+            raw_lines = headline.split("\\n") if "\\n" in headline else headline.split("\n")
+            all_lines = []
+            for raw_line in raw_lines:
+                wrapped = _wrap_text(raw_line.strip(), font, max_text_w)
+                all_lines.extend(wrapped)
+
+            # Check total height
+            line_spacing = int(font_size * 1.25)
+            block_h = len(all_lines) * line_spacing
+
+            # Check if any line is still wider than max_text_w
+            max_line_w = 0
+            for line in all_lines:
+                bbox = font.getbbox(line)
+                lw = bbox[2] - bbox[0]
+                if lw > max_line_w:
+                    max_line_w = lw
+
+            if block_h <= max_headline_h and max_line_w <= max_text_w:
+                break
+            font_size = int(font_size * 0.9)
+
+        font = _load_font(fonts_dir, font_weight, font_size)
+        line_spacing = int(font_size * 1.25)
+        y_pos = int(canvas_h * 0.16)
 
         for i, line in enumerate(all_lines):
             ly = y_pos + i * line_spacing
@@ -500,11 +521,13 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
         headline_end_y = int(canvas_h * 0.25)
 
     # ----- 3. Data Point (big number + label) -----
+    # Skip data point if product overlay is active (would collide)
+    product_overlay_active = config.get("product_overlay", {}).get("enabled", False)
     data_number = text_cfg.get("data_number")
     data_label = text_cfg.get("data_label")
     data_end_y = headline_end_y
 
-    if data_number:
+    if data_number and not product_overlay_active:
         number_font_size = int(canvas_h * 0.12)
         number_font = _load_font(fonts_dir, "bold", number_font_size)
 
@@ -630,7 +653,12 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
         ts_font_size = int(canvas_h * 0.018)
         ts_font = _load_font(fonts_dir, "regular", ts_font_size)
 
-        ts_y = int(canvas_h * 0.88)
+        # If trust bar is visible, move trust signal higher to avoid overlap
+        trust_bar_visible = config.get("trust_bar", {}).get("visible", False)
+        if trust_bar_visible:
+            ts_y = int(canvas_h * 0.82)
+        else:
+            ts_y = int(canvas_h * 0.88)
 
         # Center horizontally
         ts_bbox = ts_font.getbbox(trust_signal)
