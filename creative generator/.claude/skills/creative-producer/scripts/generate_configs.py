@@ -60,12 +60,11 @@ GRADIENTS = [
     {"color": "#1A1A2E", "gradient_to": "#3A3A5C", "direction": "top_to_bottom"},
 ]
 
-# Product images categorized
+# Product images categorized — ONLY clean photos without baked-in text
 LIFESTYLE_IMAGES = [
-    "products/images/ora-ultra-matratze/0.jpg",  # couple
-    "products/images/ora-ultra-matratze/1.jpg",  # woman sleeping
-    "products/images/ora-ultra-matratze/6.png",  # lifestyle
-    "products/images/ora-ultra-matratze/7.png",  # lifestyle
+    "products/images/ora-ultra-matratze/0.jpg",  # couple on mattress (clean)
+    "products/images/ora-ultra-matratze/1.jpg",  # woman sleeping in bedroom (clean)
+    # 6.png, 7.png excluded — have baked-in text/labels
 ]
 
 # These images already have text/labels baked in — ONLY use as full-bleed background, NOT as overlay

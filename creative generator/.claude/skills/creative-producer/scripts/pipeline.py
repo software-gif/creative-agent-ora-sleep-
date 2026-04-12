@@ -470,19 +470,32 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
 
     # ----- 1. Subheadline -----
     subheadline = text_cfg.get("subheadline")
+    # Reserve space for logo at the top
+    logo_visible = config.get("logo", {}).get("visible", False)
+    logo_reserve = int(canvas_h * 0.095) if logo_visible else int(canvas_h * 0.06)
+    subheadline_y_end = logo_reserve
+
     if subheadline:
         font_size = int(canvas_h * 0.025)
         font = _load_font(fonts_dir, "regular", font_size)
-        y_pos = int(canvas_h * 0.12)
+        y_pos = max(int(canvas_h * 0.12), logo_reserve + int(canvas_h * 0.015))
 
-        text_color = _text_color_for_bg(img, margin_x, y_pos, max_text_w, font_size * 2)
+        # Center subheadline to match typical Ora ad style
+        sub_bbox = font.getbbox(subheadline)
+        sub_w = sub_bbox[2] - sub_bbox[0]
+        sub_h = sub_bbox[3] - sub_bbox[1]
+        sub_x = (canvas_w - sub_w) // 2
+
+        text_color = _text_color_for_bg(img, sub_x, y_pos, sub_w, font_size * 2)
         # 70% opacity
         text_color = (text_color[0], text_color[1], text_color[2], int(255 * 0.70))
 
         # Subtle shadow
         shadow_color = (0, 0, 0, int(255 * 0.25))
-        draw.text((margin_x + 1, y_pos + 1), subheadline, font=font, fill=shadow_color)
-        draw.text((margin_x, y_pos), subheadline, font=font, fill=text_color)
+        draw.text((sub_x + 1, y_pos + 1), subheadline, font=font, fill=shadow_color)
+        draw.text((sub_x, y_pos), subheadline, font=font, fill=text_color)
+
+        subheadline_y_end = y_pos + sub_h + int(canvas_h * 0.01)
 
     # ----- 2. Headline -----
     headline = text_cfg.get("headline")
@@ -498,8 +511,8 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
 
         # Start with default size, shrink if the wrapped block is too tall
         font_size = int(canvas_h * 0.055)
-        # If product overlay is present, headline must stop before the product
-        headline_y_start = int(canvas_h * 0.16)
+        # Headline starts after subheadline (or after logo reserve if no subheadline)
+        headline_y_start = max(int(canvas_h * 0.17), subheadline_y_end + int(canvas_h * 0.005))
         if product_top is not None:
             available_h = product_top - headline_y_start - int(canvas_h * 0.02)
             max_headline_h = max(int(canvas_h * 0.12), available_h)
@@ -539,13 +552,17 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
 
         for i, line in enumerate(all_lines):
             ly = y_pos + i * line_spacing
-            text_color = _text_color_for_bg(img, margin_x, ly, max_text_w, font_size)
+            # Center each line individually
+            line_bbox = font.getbbox(line)
+            line_w = line_bbox[2] - line_bbox[0]
+            line_x = (canvas_w - line_w) // 2
+            text_color = _text_color_for_bg(img, line_x, ly, line_w, font_size)
             text_color = (text_color[0], text_color[1], text_color[2], 255)
 
             # Subtle shadow
             shadow_color = (0, 0, 0, int(255 * 0.30))
-            draw.text((margin_x + 1, ly + 1), line, font=font, fill=shadow_color)
-            draw.text((margin_x, ly), line, font=font, fill=text_color)
+            draw.text((line_x + 1, ly + 1), line, font=font, fill=shadow_color)
+            draw.text((line_x, ly), line, font=font, fill=text_color)
 
         # Track where headline ends for positioning subsequent elements
         headline_end_y = y_pos + len(all_lines) * line_spacing
