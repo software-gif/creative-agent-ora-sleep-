@@ -281,6 +281,44 @@ def _pass_product_overlay(img: Image.Image, config: dict, project_root: str) -> 
     target_w = int(canvas_w * scale)
     ratio = product.height / product.width
     target_h = int(target_w * ratio)
+
+    # Constrain product height based on text elements that need space
+    # Reserve: top area (headline + subheadline + logo) + bottom area (CTA + price + trust signal + trust bar)
+    text_cfg = config.get("text", {})
+    has_subheadline = bool(text_cfg.get("subheadline"))
+    has_cta = bool(text_cfg.get("cta"))
+    has_price = bool(text_cfg.get("price"))
+    has_trust_signal = bool(text_cfg.get("trust_signal"))
+    trust_bar_visible = config.get("trust_bar", {}).get("visible", False)
+    logo_visible = config.get("logo", {}).get("visible", False)
+
+    # Reserve top space: logo (3%) + subheadline (4%) + headline (14%) ≈ 21%
+    reserve_top = int(canvas_h * 0.22)
+    if has_subheadline:
+        reserve_top += int(canvas_h * 0.03)
+
+    # Reserve bottom space: CTA (6%) + price (4%) + trust signal (3%) + trust bar (8%) + padding
+    reserve_bottom = int(canvas_h * 0.02)  # Base padding
+    if has_cta:
+        reserve_bottom += int(canvas_h * 0.07)
+    if has_price:
+        reserve_bottom += int(canvas_h * 0.05)
+    if has_trust_signal:
+        reserve_bottom += int(canvas_h * 0.035)
+    if trust_bar_visible:
+        reserve_bottom += int(canvas_h * 0.08)
+
+    available_h = canvas_h - reserve_top - reserve_bottom
+    if target_h > available_h:
+        # Scale down to fit
+        new_target_h = available_h
+        new_target_w = int(new_target_h / ratio)
+        # But don't make it too narrow either
+        if new_target_w < int(canvas_w * 0.4):
+            new_target_w = int(canvas_w * 0.4)
+            new_target_h = int(new_target_w * ratio)
+        target_w, target_h = new_target_w, new_target_h
+
     product = product.resize((target_w, target_h), Image.LANCZOS)
 
     # Apply rounded rectangle mask if requested
@@ -301,32 +339,35 @@ def _pass_product_overlay(img: Image.Image, config: dict, project_root: str) -> 
         combined_alpha = ImageChops.multiply(product_a, mask)
         product = Image.merge("RGBA", (product_r, product_g, product_b, combined_alpha))
 
-    # Calculate position — reserve space for trust bar if visible
+    # Calculate position — product sits in the usable area between top and bottom reserves
     position = overlay_cfg.get("position", "center")
-    trust_bar_visible = config.get("trust_bar", {}).get("visible", False)
-    # Trust bar takes ~7% of canvas; reserve ~10% for it + breathing room
-    reserved_bottom = int(canvas_h * 0.12) if trust_bar_visible else int(canvas_h * 0.05)
+    px = (canvas_w - target_w) // 2  # Always center horizontally
 
-    if position == "center":
-        px = (canvas_w - target_w) // 2
-        # Center but avoid the trust bar area
-        if trust_bar_visible:
-            usable_h = canvas_h - reserved_bottom
-            py = (usable_h - target_h) // 2 + int(canvas_h * 0.02)
-        else:
-            py = (canvas_h - target_h) // 2
-    elif position == "center_bottom":
-        px = (canvas_w - target_w) // 2
-        py = canvas_h - target_h - reserved_bottom
+    # Available vertical area for product
+    usable_start = reserve_top
+    usable_end = canvas_h - reserve_bottom
+    usable_h = usable_end - usable_start
+
+    if position == "center_bottom":
+        # Push product to bottom of usable area
+        py = usable_end - target_h
+    elif position == "center":
+        # Center within usable area
+        py = usable_start + (usable_h - target_h) // 2
     elif position == "bottom_left":
         px = int(canvas_w * 0.05)
-        py = canvas_h - target_h - reserved_bottom
+        py = usable_end - target_h
     elif position == "bottom_right":
         px = canvas_w - target_w - int(canvas_w * 0.05)
-        py = canvas_h - target_h - reserved_bottom
+        py = usable_end - target_h
     else:
-        px = (canvas_w - target_w) // 2
-        py = (canvas_h - target_h) // 2
+        py = usable_start + (usable_h - target_h) // 2
+
+    # Safety clamp
+    if py < usable_start:
+        py = usable_start
+    if py + target_h > usable_end:
+        py = usable_end - target_h
 
     # Drop shadow (rendered BEFORE the product)
     if overlay_cfg.get("shadow", False):
@@ -649,17 +690,31 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
         btn_h = cta_text_h + btn_pad_y * 2
 
         # Position: centered horizontally
-        # If product overlay exists, place CTA below the product
+        trust_bar_visible = config.get("trust_bar", {}).get("visible", False)
+        bg_is_photo = config.get("background", {}).get("mode") == "photo"
+        has_price_el = bool(text_cfg.get("price"))
+        has_ts_el = bool(text_cfg.get("trust_signal"))
+
         if product_bottom is not None:
+            # Product overlay exists → place CTA below the product
             btn_y = product_bottom + int(canvas_h * 0.025)
-            # Make sure it doesn't collide with trust bar
-            trust_bar_visible = config.get("trust_bar", {}).get("visible", False)
-            max_btn_y = canvas_h - btn_h - (int(canvas_h * 0.09) if trust_bar_visible else int(canvas_h * 0.04))
+            max_btn_y = canvas_h - btn_h - (int(canvas_h * 0.10) if trust_bar_visible else int(canvas_h * 0.04))
             if btn_y > max_btn_y:
                 btn_y = max_btn_y
+        elif bg_is_photo:
+            # Full-bleed photo background → place CTA near the bottom
+            # Reserve extra space if price/trust signal are below the CTA
+            extra_space = 0
+            if has_price_el:
+                extra_space += int(canvas_h * 0.05)
+            if has_ts_el:
+                extra_space += int(canvas_h * 0.035)
+            if trust_bar_visible:
+                btn_y = canvas_h - btn_h - int(canvas_h * 0.10) - extra_space
+            else:
+                btn_y = canvas_h - btn_h - int(canvas_h * 0.06) - extra_space
         else:
             btn_y = int(canvas_h * 0.67)
-            # If data point pushed things down, position relative to that
             if data_end_y > btn_y - btn_h:
                 btn_y = data_end_y + int(canvas_h * 0.04)
 

@@ -329,12 +329,8 @@ def _pick_text(rng: random.Random, angle: dict) -> dict:
     cta = rng.choice(CTAS)
     cta_color = rng.choice(CTA_COLORS)
 
-    # Price: 40% of the time
-    price = rng.choice(PRICES) if rng.random() < 0.40 else None
-
-    # Trust signal: 60% of the time
-    trust_signal = rng.choice(TRUST_SIGNALS) if rng.random() < 0.60 else None
-
+    # Price + Trust Signal are ONLY used when Trust Bar is NOT shown
+    # (to avoid stacking too many elements in the bottom area)
     text_config = {
         "subheadline": subheadline,
         "headline": headline,
@@ -347,10 +343,6 @@ def _pick_text(rng: random.Random, angle: dict) -> dict:
         text_config["data_number"] = data_number
     if data_label:
         text_config["data_label"] = data_label
-    if price:
-        text_config["price"] = price
-    if trust_signal:
-        text_config["trust_signal"] = trust_signal
 
     return text_config
 
@@ -403,6 +395,15 @@ def generate_single_config(rng: random.Random, angle: dict) -> dict:
 
     logo = _pick_logo(rng)
     trust_bar = _pick_trust_bar(rng)
+
+    # XOR: Trust Bar OR (Price + Trust Signal), never both
+    # Trust Bar takes up the bottom — no room for additional text there
+    if not trust_bar.get("visible", False):
+        # No trust bar → add price and trust signal as text elements
+        if rng.random() < 0.60:
+            text_config["price"] = rng.choice(PRICES)
+        if rng.random() < 0.55:
+            text_config["trust_signal"] = rng.choice(TRUST_SIGNALS)
 
     creative_type = _determine_creative_type(bg_mode, overlay_enabled, has_data)
 
