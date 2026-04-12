@@ -43,11 +43,17 @@ FONT_FILES = {
     "bold":     "Jost-Bold.ttf",
 }
 
-# Trust bar short labels for narrow formats
+# Trust bar short labels for narrow formats (progressive shortening)
 TRUST_SHORT = {
     "Kostenlose Lieferung": "Gratis Versand",
+    "Kostenlose Lieferung & Retoure": "Gratis Versand",
     "200 Nächte testen":    "200 Nächte",
+    "200 Nächte Probeschlafen": "200 Nächte",
     "10 Jahre Garantie":    "10J Garantie",
+    "Gratis Versand":       "Versand",
+    "200 Nächte":           "200 N.",
+    "10J Garantie":         "10 Jahre",
+    "Testsieger 2026":      "Testsieger",
 }
 
 
@@ -295,22 +301,29 @@ def _pass_product_overlay(img: Image.Image, config: dict, project_root: str) -> 
         combined_alpha = ImageChops.multiply(product_a, mask)
         product = Image.merge("RGBA", (product_r, product_g, product_b, combined_alpha))
 
-    # Calculate position
+    # Calculate position — reserve space for trust bar if visible
     position = overlay_cfg.get("position", "center")
-    margin_bottom = int(canvas_h * 0.05)
+    trust_bar_visible = config.get("trust_bar", {}).get("visible", False)
+    # Trust bar takes ~7% of canvas; reserve ~10% for it + breathing room
+    reserved_bottom = int(canvas_h * 0.12) if trust_bar_visible else int(canvas_h * 0.05)
 
     if position == "center":
         px = (canvas_w - target_w) // 2
-        py = (canvas_h - target_h) // 2
+        # Center but avoid the trust bar area
+        if trust_bar_visible:
+            usable_h = canvas_h - reserved_bottom
+            py = (usable_h - target_h) // 2 + int(canvas_h * 0.02)
+        else:
+            py = (canvas_h - target_h) // 2
     elif position == "center_bottom":
         px = (canvas_w - target_w) // 2
-        py = canvas_h - target_h - margin_bottom
+        py = canvas_h - target_h - reserved_bottom
     elif position == "bottom_left":
         px = int(canvas_w * 0.05)
-        py = canvas_h - target_h - margin_bottom
+        py = canvas_h - target_h - reserved_bottom
     elif position == "bottom_right":
         px = canvas_w - target_w - int(canvas_w * 0.05)
-        py = canvas_h - target_h - margin_bottom
+        py = canvas_h - target_h - reserved_bottom
     else:
         px = (canvas_w - target_w) // 2
         py = (canvas_h - target_h) // 2
@@ -346,6 +359,14 @@ def _pass_product_overlay(img: Image.Image, config: dict, project_root: str) -> 
 
     # Paste the product
     img.paste(product, (px, py), product)
+
+    # Store the product region in config so typography pass can avoid collisions
+    config["_product_region"] = {
+        "top": py,
+        "bottom": py + target_h,
+        "left": px,
+        "right": px + target_w,
+    }
 
     return img
 
@@ -442,6 +463,11 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
     margin_x = int(canvas_w * 0.08)
     max_text_w = canvas_w - margin_x * 2
 
+    # Get product overlay region if present (set by _pass_product_overlay)
+    product_region = config.get("_product_region")
+    product_top = product_region["top"] if product_region else None
+    product_bottom = product_region["bottom"] if product_region else None
+
     # ----- 1. Subheadline -----
     subheadline = text_cfg.get("subheadline")
     if subheadline:
@@ -472,8 +498,14 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
 
         # Start with default size, shrink if the wrapped block is too tall
         font_size = int(canvas_h * 0.055)
-        max_headline_h = int(canvas_h * 0.28)  # Max 28% of canvas for headline
-        min_font_size = int(canvas_h * 0.032)
+        # If product overlay is present, headline must stop before the product
+        headline_y_start = int(canvas_h * 0.16)
+        if product_top is not None:
+            available_h = product_top - headline_y_start - int(canvas_h * 0.02)
+            max_headline_h = max(int(canvas_h * 0.12), available_h)
+        else:
+            max_headline_h = int(canvas_h * 0.28)  # Max 28% of canvas for headline
+        min_font_size = int(canvas_h * 0.028)
 
         all_lines = []
         while font_size >= min_font_size:
@@ -503,7 +535,7 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
 
         font = _load_font(fonts_dir, font_weight, font_size)
         line_spacing = int(font_size * 1.25)
-        y_pos = int(canvas_h * 0.16)
+        y_pos = headline_y_start
 
         for i, line in enumerate(all_lines):
             ly = y_pos + i * line_spacing
@@ -521,13 +553,15 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
         headline_end_y = int(canvas_h * 0.25)
 
     # ----- 3. Data Point (big number + label) -----
-    # Skip data point if product overlay is active (would collide)
+    # Skip data point if product overlay is active OR background is a photo
+    # (both would cause visual collision with the data point)
     product_overlay_active = config.get("product_overlay", {}).get("enabled", False)
+    bg_is_photo = config.get("background", {}).get("mode") == "photo"
     data_number = text_cfg.get("data_number")
     data_label = text_cfg.get("data_label")
     data_end_y = headline_end_y
 
-    if data_number and not product_overlay_active:
+    if data_number and not product_overlay_active and not bg_is_photo:
         number_font_size = int(canvas_h * 0.12)
         number_font = _load_font(fonts_dir, "bold", number_font_size)
 
@@ -597,11 +631,20 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
         btn_w = cta_text_w + btn_pad_x * 2
         btn_h = cta_text_h + btn_pad_y * 2
 
-        # Position: centered horizontally, ~67% from top
-        btn_y = int(canvas_h * 0.67)
-        # But if data point pushed things down, position relative to that
-        if data_end_y > btn_y - btn_h:
-            btn_y = data_end_y + int(canvas_h * 0.04)
+        # Position: centered horizontally
+        # If product overlay exists, place CTA below the product
+        if product_bottom is not None:
+            btn_y = product_bottom + int(canvas_h * 0.025)
+            # Make sure it doesn't collide with trust bar
+            trust_bar_visible = config.get("trust_bar", {}).get("visible", False)
+            max_btn_y = canvas_h - btn_h - (int(canvas_h * 0.09) if trust_bar_visible else int(canvas_h * 0.04))
+            if btn_y > max_btn_y:
+                btn_y = max_btn_y
+        else:
+            btn_y = int(canvas_h * 0.67)
+            # If data point pushed things down, position relative to that
+            if data_end_y > btn_y - btn_h:
+                btn_y = data_end_y + int(canvas_h * 0.04)
 
         btn_x = (canvas_w - btn_w) // 2
 
@@ -629,6 +672,7 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
 
     # ----- 5. Price -----
     price = text_cfg.get("price")
+    price_end_y = cta_end_y
     if price:
         price_font_size = int(canvas_h * 0.032)
         price_font = _load_font(fonts_dir, "bold", price_font_size)
@@ -638,6 +682,7 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
         # Center horizontally
         price_bbox = price_font.getbbox(price)
         price_w = price_bbox[2] - price_bbox[0]
+        price_h = price_bbox[3] - price_bbox[1]
         price_x = (canvas_w - price_w) // 2
 
         text_color = _text_color_for_bg(img, price_x, price_y, price_w, price_font_size)
@@ -646,6 +691,8 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
         shadow_c = (0, 0, 0, int(255 * 0.30))
         draw.text((price_x + 1, price_y + 1), price, font=price_font, fill=shadow_c)
         draw.text((price_x, price_y), price, font=price_font, fill=text_color)
+
+        price_end_y = price_y + price_h
 
     # ----- 6. Trust Signal -----
     trust_signal = text_cfg.get("trust_signal")
@@ -659,6 +706,13 @@ def _pass_typography(img: Image.Image, config: dict, project_root: str) -> Image
             ts_y = int(canvas_h * 0.82)
         else:
             ts_y = int(canvas_h * 0.88)
+
+        # If price/CTA was pushed down by product, place trust signal below
+        if price_end_y > ts_y - ts_font_size:
+            ts_y = price_end_y + int(canvas_h * 0.015)
+            # Don't go into trust bar
+            if trust_bar_visible and ts_y > canvas_h - int(canvas_h * 0.09):
+                ts_y = canvas_h - int(canvas_h * 0.10)
 
         # Center horizontally
         ts_bbox = ts_font.getbbox(trust_signal)
@@ -746,32 +800,58 @@ def _pass_brand_elements(img: Image.Image, config: dict, project_root: str) -> I
         bar_height = int(canvas_h * 0.07)
         bar_y = canvas_h - bar_height
 
-        # Semi-transparent black background
+        # Semi-transparent black background (fully opaque for readability)
         bar_layer = Image.new("RGBA", (canvas_w, canvas_h), (0, 0, 0, 0))
         bar_draw = ImageDraw.Draw(bar_layer)
         bar_draw.rectangle(
             [(0, bar_y), (canvas_w, canvas_h)],
-            fill=(0, 0, 0, 180)
+            fill=(0, 0, 0, 220)
         )
 
         # Determine font size — try to fit all items
-        font_size = int(bar_height * 0.28)
+        col_width = canvas_w // len(items)
+        max_item_w = int(col_width * 0.90)
+
+        # Start with default font size and shrink if needed
+        font_size = int(bar_height * 0.30)
+        min_font_size = int(bar_height * 0.20)
+
+        def _fits(display_items, font):
+            for item in display_items:
+                bbox = font.getbbox(item)
+                if (bbox[2] - bbox[0]) > max_item_w:
+                    return False
+            return True
+
+        def _shorten_item(item):
+            """Apply progressive shortening: Full → Short → Shorter."""
+            short = TRUST_SHORT.get(item, item)
+            # Apply shortening chain (max 2 levels)
+            shorter = TRUST_SHORT.get(short, short)
+            return shorter
+
+        # Start with original items
+        display_items = list(items)
         font = _load_font(fonts_dir, "regular", font_size)
 
-        # Auto-shorten items if they don't fit
-        col_width = canvas_w // len(items)
-        max_item_w = int(col_width * 0.85)
+        # Step 1: Try with original items
+        if not _fits(display_items, font):
+            # Step 2: Apply short labels
+            display_items = [_shorten_item(item) for item in items]
 
-        display_items = []
-        for item in items:
+        # Step 3: Shrink font until it fits (down to minimum)
+        while not _fits(display_items, font) and font_size > min_font_size:
+            font_size = int(font_size * 0.92)
+            font = _load_font(fonts_dir, "regular", font_size)
+
+        # Step 4: If still doesn't fit, truncate text with ellipsis
+        for idx, item in enumerate(display_items):
             bbox = font.getbbox(item)
-            item_w = bbox[2] - bbox[0]
-            if item_w > max_item_w:
-                # Try shortened version
-                short = TRUST_SHORT.get(item, item)
-                display_items.append(short)
-            else:
-                display_items.append(item)
+            while (bbox[2] - bbox[0]) > max_item_w and len(item) > 3:
+                item = item[:-1]
+                bbox = font.getbbox(item + "…")
+            if item != display_items[idx]:
+                display_items[idx] = item.rstrip() + "…" if item != display_items[idx] else item
 
         # Render items evenly spaced
         text_color = (255, 255, 255, int(255 * 0.80))

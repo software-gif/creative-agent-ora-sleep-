@@ -226,7 +226,7 @@ def _pick_background(rng: random.Random) -> dict:
 
 
 def _pick_product_overlay(rng: random.Random, bg_mode: str, bg_config: dict) -> dict:
-    """Pick product overlay config. Disabled for full-bleed photo backgrounds 60% of the time."""
+    """Pick product overlay config. Disabled for lifestyle photo backgrounds 75% of time."""
     # For photo backgrounds with lifestyle images, often skip overlay
     if bg_mode == "photo":
         photo_path = bg_config.get("photo_path", "")
@@ -236,18 +236,20 @@ def _pick_product_overlay(rng: random.Random, bg_mode: str, bg_config: dict) -> 
             if rng.random() < 0.75:
                 return {"enabled": False}
 
-    # 60% chance of overlay for non-lifestyle backgrounds
-    if rng.random() > 0.60:
+    # For color/gradient backgrounds, ALWAYS enable overlay (otherwise empty canvas)
+    # For photo backgrounds, 60% chance
+    if bg_mode == "photo" and rng.random() > 0.60:
         return {"enabled": False}
 
     image_path = rng.choice(OVERLAY_IMAGES)
-    scale = round(rng.uniform(0.55, 0.75), 2)
-    position = rng.choice(["center", "center_bottom"])
+    scale = round(rng.uniform(0.65, 0.85), 2)
+    # center_bottom looks more polished (product sits on the bottom, text on top)
+    position = rng.choices(["center_bottom", "center"], weights=[70, 30], k=1)[0]
 
-    # Rounded rect mask for photo-on-color, none for product shots
+    # Rounded rect mask for photo-on-color — always use it for visual polish
     mask = "none"
-    if bg_mode in ("color", "gradient") and "9.jpg" not in image_path:
-        mask = rng.choice(["rounded_rect", "rounded_rect", "none"])  # 67% rounded
+    if bg_mode in ("color", "gradient"):
+        mask = "rounded_rect"
 
     return {
         "enabled": True,
