@@ -621,12 +621,91 @@ def main():
     print(f"✓ market_report.md     → {(OUTPUT_DIR / 'market_report.md').relative_to(PROJECT_ROOT)}")
     print()
 
+    # Sync to Supabase so the Board /competitors page picks up the insights
+    try:
+        sync_insights_to_supabase(env, brand_results, insights_payload, report)
+    except Exception as e:
+        print(f"  ⚠ Supabase sync failed (non-fatal): {e}")
+
     # Quick CLI summary
     recs = insights.get("ora_differentiation", [])
     if recs:
         print(f"Top {min(3, len(recs))} recommendations for Ora:")
         for r in recs[:3]:
             print(f"  [{r.get('priority', '?').upper()}] {r.get('recommendation', '')}")
+
+
+def sync_insights_to_supabase(env, brand_results, insights_payload, report_md):
+    """Write per-brand analysis rows + update last_analyzed_at on competitors table.
+
+    Requires SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, BRAND_ID in env. Skips
+    silently if any are missing — local files remain the source of truth.
+    """
+    url = (env.get("SUPABASE_URL") or os.environ.get("SUPABASE_URL", "")).rstrip("/")
+    key = env.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+    brand_id = env.get("BRAND_ID") or os.environ.get("BRAND_ID", "")
+    if not (url and key and brand_id):
+        print("  (skip Supabase sync — missing env vars)")
+        return
+
+    headers = {
+        "apikey": key,
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+
+    # Look up existing competitors by slug so we can match the brand_results
+    lookup = requests.get(
+        f"{url}/rest/v1/competitors",
+        headers=headers,
+        params={"brand_id": f"eq.{brand_id}", "select": "id,slug,name"},
+        timeout=15,
+    )
+    lookup.raise_for_status()
+    slug_to_id = {row["slug"]: row["id"] for row in lookup.json()}
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    analyses_written = 0
+
+    for r in brand_results:
+        if r.get("status") != "ok":
+            continue
+        slug = r.get("slug")
+        comp_id = slug_to_id.get(slug)
+        if not comp_id:
+            print(f"  (skip {r['brand']}: no competitors row — run sync_to_board.py first)")
+            continue
+
+        vision = r.get("vision_results") or []
+        analysis_row = {
+            "competitor_id": comp_id,
+            "summary_json": insights_payload,
+            "report_md": report_md,
+            "ads_count": r.get("summary", {}).get("total_ads", 0),
+            "top_winners": vision,
+        }
+        ins = requests.post(
+            f"{url}/rest/v1/competitor_analyses",
+            headers=headers,
+            json=analysis_row,
+            timeout=15,
+        )
+        if not ins.ok:
+            print(f"  ✗ insert analysis for {r['brand']}: {ins.status_code}")
+            continue
+        analyses_written += 1
+
+        # Touch last_analyzed_at on the competitor row
+        requests.patch(
+            f"{url}/rest/v1/competitors",
+            headers=headers,
+            params={"id": f"eq.{comp_id}"},
+            json={"last_analyzed_at": now_iso},
+            timeout=15,
+        )
+
+    print(f"  ✓ Supabase sync: {analyses_written} analysis rows written")
 
 
 if __name__ == "__main__":

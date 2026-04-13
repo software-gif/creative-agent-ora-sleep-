@@ -84,12 +84,15 @@ def main():
             continue
         png = png_files[-1]
 
-        # Derive hook_text from the variation prompt (first headline line)
-        hook_text = {
+        # Prefer spec-level hook_text / angle if present, else fall back to
+        # the legacy hardcoded mapping (for the first schwinger run)
+        variation = variations[slug]
+        hook_text = variation.get("hook_text") or {
             "var-1-schwinger": "Diese Matratze übersteht zwei Schwinger.",
             "var-2-93-prozent": "93% schlafen besser mit Ora.",
             "var-3-ruecken": "Morgens ohne Rückenschmerzen aufstehen?",
         }.get(slug, "")
+        row_angle = variation.get("angle") or angle_key
 
         # 1) Upload to storage
         storage_path = f"{brand_id}/{batch_id}/{png.name}"
@@ -117,11 +120,12 @@ def main():
         print(f"  ✓ uploaded {png.name}")
 
         # 2) Insert row
+        sub_angle = variation.get("sub_angle") or spec.get("output_name", "") or slug
         row = {
             "brand_id": brand_id,
             "batch_id": batch_id,
-            "angle": angle_key,
-            "sub_angle": "schwinger-garantie",
+            "angle": row_angle,
+            "sub_angle": sub_angle,
             "variant": 1,
             "format": aspect_ratio,
             "hook_text": hook_text,
