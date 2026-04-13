@@ -355,6 +355,10 @@ export default function ImageOverlay({ creative, onClose }: ImageOverlayProps) {
   const pixelSize = PIXEL_SIZES[creative.format] || creative.format;
   const hasCopy =
     !!creative.primary_text || !!(creative.headlines && creative.headlines.length);
+  // Only show the Regenerate button in environments where the Python
+  // briefing-agent can actually run (local dev). In deployed environments
+  // (Vercel) the skill binary isn't available, so hide the affordance.
+  const canRegenerate = process.env.NEXT_PUBLIC_ENABLE_LOCAL_SKILLS === "true";
 
   async function regenerateCopy() {
     if (!creative) return;
@@ -434,18 +438,20 @@ export default function ImageOverlay({ creative, onClose }: ImageOverlayProps) {
             >
               Download
             </button>
-            <button
-              onClick={regenerateCopy}
-              disabled={regenerating}
-              className="flex-1 text-xs font-semibold bg-white/10 text-white py-2 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
-              title="Briefing + Meta Copy neu generieren"
-            >
-              {regenerating
-                ? "Läuft…"
-                : hasCopy
-                ? "↻ Regenerate"
-                : "Generate Copy"}
-            </button>
+            {canRegenerate && (
+              <button
+                onClick={regenerateCopy}
+                disabled={regenerating}
+                className="flex-1 text-xs font-semibold bg-white/10 text-white py-2 rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
+                title="Briefing + Meta Copy neu generieren"
+              >
+                {regenerating
+                  ? "Läuft…"
+                  : hasCopy
+                  ? "↻ Regenerate"
+                  : "Generate Copy"}
+              </button>
+            )}
           </div>
           {regenError && (
             <div className="mt-2 text-[11px] text-red-400 leading-tight">
