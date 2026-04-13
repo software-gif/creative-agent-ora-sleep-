@@ -1,0 +1,16 @@
+.env
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+brands/*/models/
+brands/*/styled/
+brands/*/static-ads/
+brands/*/reformat/
+brands/*/packshots/
+brands/*/product-shots/
+brands/*/clothing-shoot/
+brands/*/ugc/
+brands/*/product-ugc/
+brands/*/model-product-shoot/
+brands/*/motion/

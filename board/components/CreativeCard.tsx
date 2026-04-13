@@ -23,6 +23,14 @@ export type Creative = {
   environment: string | null;
   product_category: string | null;
   created_at: string;
+  // Briefing + Meta copy (populated by briefing-agent)
+  primary_text: string | null;
+  headlines: string[] | null;
+  description: string | null;
+  cta: string | null;
+  briefing_rationale: string | null;
+  target_audience: string | null;
+  copy_generated_at: string | null;
 };
 
 export const ANGLE_COLORS: Record<string, string> = {

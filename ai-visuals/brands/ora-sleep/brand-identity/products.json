@@ -1,0 +1,83 @@
+{
+  "brand": "Ora Sleep",
+  "brand_slug": "ora-sleep",
+  "shop_url": "https://orasleep.ch",
+  "platform": "shopify",
+  "language": "de",
+  "currency": "CHF",
+  "products": [
+    {
+      "handle": "ora-ultra-matratze",
+      "name": "Ora Ultra Matratze",
+      "type": "Matratze",
+      "url": "https://orasleep.ch/products/ora-ultra-matratze",
+      "price_from": 899.0,
+      "price_to": 1699.0,
+      "compare_at_price": 2091.0,
+      "sizes": ["80x200", "90x200", "100x200", "120x200", "140x200", "160x200", "180x200", "200x200"],
+      "images": [
+        "product-images/ora-ultra-matratze-0.jpg",
+        "product-images/ora-ultra-matratze-1.jpg",
+        "product-images/ora-ultra-matratze-2.png",
+        "product-images/ora-ultra-matratze-3.png",
+        "product-images/ora-ultra-matratze-4.png",
+        "product-images/ora-ultra-matratze-5.png",
+        "product-images/ora-ultra-matratze-6.png",
+        "product-images/ora-ultra-matratze-7.png",
+        "product-images/ora-ultra-matratze-8.png",
+        "product-images/ora-ultra-matratze-9.jpg"
+      ],
+      "benefits": [
+        "Der erholsamste Schlaf deines Lebens — ab Nacht eins",
+        "Adaptive Positionierung für jede Schlafposition",
+        "Oceans Cool Technology gegen Nachtschweiß",
+        "Druckentlastung für Rücken und Nacken",
+        "Swiss Made — entwickelt und hergestellt in der Schweiz",
+        "Testsieger 2026 (Kassensturz-Selbsttest)"
+      ],
+      "customer_reported_stats": [
+        "60% schlafen in unter 10 Minuten ein",
+        "Morgen-Feeling verbessert von 5.4 auf 8.6/10",
+        "49% berichten von deutlicher Schmerzlinderung",
+        "93% berichten besseren Schlaf und mehr Energie"
+      ],
+      "rating": 4.1,
+      "reviews_count": 108
+    },
+    {
+      "handle": "ora-ultra-topper",
+      "name": "Ora Ultra Topper",
+      "type": "Topper",
+      "url": "https://orasleep.ch/products/ora-ultra-topper",
+      "price_from": 799.0,
+      "price_to": 899.0,
+      "compare_at_price": 1858.0,
+      "sizes": ["160x200", "180x200", "200x200"],
+      "images": [
+        "product-images/ora-ultra-topper-0.jpg",
+        "product-images/ora-ultra-topper-1.jpg",
+        "product-images/ora-ultra-topper-2.jpg",
+        "product-images/ora-ultra-topper-3.jpg",
+        "product-images/ora-ultra-topper-4.png"
+      ],
+      "benefits": [
+        "Das Luxus-Upgrade für dein Bett — spürbar weicher, perfekt gestützt",
+        "Druckentlastung für Schultern und Hüfte",
+        "Atmungsaktiv für trockenes Schlafklima",
+        "Elastischer Grip — rutscht nicht",
+        "Swiss Made Qualität"
+      ]
+    }
+  ],
+  "trust_signals": {
+    "trustpilot_rating": 4.5,
+    "trustpilot_reviews": 237,
+    "judge_me_responses": 108,
+    "certifications": ["Swiss Made", "Swiss Label Verband", "Testsieger 2026"]
+  },
+  "competitors": {
+    "primary": ["Simba Sleep (UK)", "Sleep Guys", "Mozart Matratzen", "Avocado (USA)"],
+    "avoid_comparison_to": ["Emma — positioned as too conservative, Ora explicitly differentiates on creative diversity"]
+  },
+  "health_claims_guardrail": "Never promise cures or medical outcomes. Always phrase as customer-reported percentages or Judge.me data. Violation = Meta ad-account blacklist risk."
+}

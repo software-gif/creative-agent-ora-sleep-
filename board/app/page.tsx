@@ -18,12 +18,7 @@ export default function Board() {
   const { brandId, loading: brandLoading } = useBrand();
   const [creatives, setCreatives] = useState<Creative[]>([]);
   const [filter, setFilter] = useState("all");
-  const [styleFilter, setStyleFilter] = useState("all");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [seasonFilter, setSeasonFilter] = useState("all");
-  const [envFilter, setEnvFilter] = useState("all");
-  const [productCatFilter, setProductCatFilter] = useState("all");
-  const [formatFilter, setFormatFilter] = useState("all");
+  const [formatFilter, setFormatFilter] = useState<"all" | "4:5" | "9:16" | "1:1">("all");
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<Creative | null>(null);
 
@@ -98,14 +93,8 @@ export default function Board() {
   }
 
   const angles = [...new Set(creatives.map((c) => c.angle))];
-  const seasons = [...new Set(creatives.map((c) => c.season).filter(Boolean))];
   const filtered = creatives
     .filter((c) => filter === "all" || c.angle === filter)
-    .filter((c) => styleFilter === "all" || c.creative_style === styleFilter)
-    .filter((c) => typeFilter === "all" || c.creative_type === typeFilter)
-    .filter((c) => seasonFilter === "all" || c.season === seasonFilter)
-    .filter((c) => envFilter === "all" || c.environment === envFilter)
-    .filter((c) => productCatFilter === "all" || c.product_category === productCatFilter)
     .filter((c) => formatFilter === "all" || c.format === formatFilter);
   const doneCount = creatives.filter((c) => c.status === "done").length;
   const generatingCount = creatives.filter((c) => c.status === "generating").length;
@@ -147,7 +136,6 @@ export default function Board() {
             )}
           </div>
           <div className="flex items-center gap-2 flex-wrap justify-end">
-            {/* Format toggle */}
             <div className="flex items-center bg-background rounded-lg p-0.5 gap-0.5">
               {(["all", "4:5", "9:16", "1:1"] as const).map((fmt) => (
                 <button
@@ -161,56 +149,8 @@ export default function Board() {
                 </button>
               ))}
             </div>
-            {/* Type toggle */}
-            <div className="flex items-center bg-background rounded-lg p-0.5 gap-0.5">
-              {(["all", "lifestyle", "product_static"] as const).map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setTypeFilter(type)}
-                  className={`text-[11px] font-medium px-2 py-1 rounded-md transition-all ${
-                    typeFilter === type ? "bg-surface text-primary shadow-sm" : "text-muted hover:text-foreground"
-                  }`}
-                >
-                  {type === "all" ? "Alle" : type === "lifestyle" ? "Lifestyle" : "Product"}
-                </button>
-              ))}
-            </div>
-            {/* Style toggle */}
-            <div className="flex items-center bg-background rounded-lg p-0.5 gap-0.5">
-              {(["all", "on_brand", "off_brand"] as const).map((style) => (
-                <button
-                  key={style}
-                  onClick={() => setStyleFilter(style)}
-                  className={`text-[11px] font-medium px-2 py-1 rounded-md transition-all ${
-                    styleFilter === style ? "bg-surface text-primary shadow-sm" : "text-muted hover:text-foreground"
-                  }`}
-                >
-                  {style === "all" ? "Alle" : style === "on_brand" ? "On" : "Off"}
-                </button>
-              ))}
-            </div>
-            {/* Dropdowns */}
-            <select value={productCatFilter} onChange={(e) => setProductCatFilter(e.target.value)} className="text-[11px] border border-border rounded-lg px-2 py-1.5 text-foreground bg-surface focus:outline-none focus:border-primary">
-              <option value="all">Alle Produkte</option>
-              <option value="ora-ultra-matratze">Ora Ultra Matratze</option>
-              <option value="ora-ultra-topper">Ora Ultra Topper</option>
-            </select>
-            <select value={envFilter} onChange={(e) => setEnvFilter(e.target.value)} className="text-[11px] border border-border rounded-lg px-2 py-1.5 text-foreground bg-surface focus:outline-none focus:border-primary">
-              <option value="all">Alle Environments</option>
-              <option value="schlafzimmer">Schlafzimmer</option>
-              <option value="wohnzimmer">Wohnzimmer</option>
-              <option value="studio">Studio</option>
-            </select>
-            <select value={seasonFilter} onChange={(e) => setSeasonFilter(e.target.value)} className="text-[11px] border border-border rounded-lg px-2 py-1.5 text-foreground bg-surface focus:outline-none focus:border-primary">
-              <option value="all">Season</option>
-              <option value="evergreen">Evergreen</option>
-              <option value="sommer">Sommer</option>
-              <option value="frühling">Frühling</option>
-              <option value="herbst">Herbst</option>
-              <option value="winter">Winter</option>
-            </select>
             <select value={filter} onChange={(e) => setFilter(e.target.value)} className="text-[11px] border border-border rounded-lg px-2 py-1.5 text-foreground bg-surface focus:outline-none focus:border-primary">
-              <option value="all">Angle</option>
+              <option value="all">Alle Angles</option>
               {angles.map((a) => (
                 <option key={a} value={a}>{ANGLE_EMOJI[a] || ""} {a} ({creatives.filter((c) => c.angle === a).length})</option>
               ))}
