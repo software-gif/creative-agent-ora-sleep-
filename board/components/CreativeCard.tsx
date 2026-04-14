@@ -31,6 +31,13 @@ export type Creative = {
   briefing_rationale: string | null;
   target_audience: string | null;
   copy_generated_at: string | null;
+  // Meta upload prep (filled in on /approved list view)
+  meta_ad_name: string | null;
+  meta_campaign: string | null;
+  meta_ad_set: string | null;
+  meta_destination_url: string | null;
+  meta_ready: boolean | null;
+  approved_at: string | null;
 };
 
 export const ANGLE_COLORS: Record<string, string> = {
