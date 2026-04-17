@@ -1,5 +1,9 @@
 "use client";
 
+import { useState } from "react";
+
+type GalleryItem = { src: string; label: string };
+
 const PRODUCTS = [
   {
     slug: "ora-ultra-matratze",
@@ -7,6 +11,11 @@ const PRODUCTS = [
     tagline: "Der erholsamste Schlaf deines Lebens – ab Nacht eins.",
     type: "Matratze",
     image: "/products/ora-ultra-matratze.png",
+    gallery: [
+      { src: "/products/ora-ultra-matratze.png", label: "Produkt (3D)" },
+      { src: "/products/ora-ultra-matratze-bedroom.png", label: "Bedroom Lifestyle" },
+      { src: "/products/ora-ultra-matratze-terracotta.png", label: "Terracotta Set" },
+    ],
     priceFrom: 899,
     priceTo: 1699,
     currency: "CHF",
@@ -34,6 +43,9 @@ const PRODUCTS = [
     tagline: "Das Luxus-Upgrade für dein Bett – spürbar weicher, perfekt gestützt.",
     type: "Topper",
     image: "/products/ora-ultra-topper.png",
+    gallery: [
+      { src: "/products/ora-ultra-topper.png", label: "Produkt" },
+    ],
     priceFrom: 799,
     priceTo: 899,
     currency: "CHF",
@@ -73,14 +85,11 @@ export default function ProductsPage() {
             className="bg-surface border border-border rounded-2xl overflow-hidden"
           >
             <div className="flex flex-col lg:flex-row">
-              {/* Image */}
-              <div className="lg:w-[340px] shrink-0 bg-gradient-to-br from-background to-surface flex items-center justify-center p-8 lg:p-10 border-b lg:border-b-0 lg:border-r border-border">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="max-h-[240px] max-w-full object-contain drop-shadow-lg"
-                />
-              </div>
+              {/* Image gallery */}
+              <ProductGallery
+                gallery={product.gallery}
+                alt={product.name}
+              />
 
               {/* Content */}
               <div className="flex-1 p-6 lg:p-8">
@@ -197,6 +206,66 @@ export default function ProductsPage() {
           </div>
         ))}
       </main>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Product image gallery with thumbnail selector
+// ---------------------------------------------------------------------------
+
+function ProductGallery({
+  gallery,
+  alt,
+}: {
+  gallery: GalleryItem[];
+  alt: string;
+}) {
+  const [active, setActive] = useState(0);
+  const current = gallery[active] ?? gallery[0];
+
+  if (!gallery.length) return null;
+
+  return (
+    <div className="lg:w-[380px] shrink-0 bg-gradient-to-br from-background to-surface border-b lg:border-b-0 lg:border-r border-border flex flex-col">
+      {/* Main image */}
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-10 min-h-[240px]">
+        <img
+          src={current.src}
+          alt={`${alt} — ${current.label}`}
+          className="max-h-[260px] max-w-full object-contain drop-shadow-lg transition-opacity duration-200"
+        />
+      </div>
+
+      {/* Thumbnails — only show if more than 1 image */}
+      {gallery.length > 1 && (
+        <div className="flex items-center gap-2 px-4 pb-4 justify-center">
+          {gallery.map((item, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={`flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg transition-colors ${
+                i === active
+                  ? "bg-primary/10 border border-primary/30"
+                  : "hover:bg-background border border-transparent"
+              }`}
+            >
+              <img
+                src={item.src}
+                alt={item.label}
+                className="w-12 h-12 object-contain"
+              />
+              <span
+                className={`text-[9px] leading-tight ${
+                  i === active ? "text-primary font-semibold" : "text-muted"
+                }`}
+              >
+                {item.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
